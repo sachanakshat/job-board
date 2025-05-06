@@ -17,7 +17,11 @@ A Node.js application that scrapes job listings from various remote job boards a
   - Full job description
   - Application statistics
 - Uses Groq API to analyze and structure job descriptions
-- Saves results to JSON files
+- Saves results in organized directories:
+  - Complete job listings
+  - Individual GROQ responses
+  - Combined GROQ responses
+  - Job metadata
 
 ## Prerequisites
 
@@ -38,7 +42,12 @@ cd job-board-scraper
 npm install
 ```
 
-3. Create a `.env` file in the root directory and add your Groq API key:
+3. Install Playwright browser:
+```bash
+npx playwright install chromium
+```
+
+4. Create a `.env` file in the root directory and add your Groq API key:
 ```
 GROQ_API_KEY=your_groq_api_key_here
 ```
@@ -74,19 +83,33 @@ job-board-scraper/
 │       │   └── board.js       # WeWorkRemotely implementation
 │       └── wellfound/
 │           └── board.js       # WellFound implementation
+├── artifacts/                  # Scraped data storage
+│   └── <board_name>/
+│       └── <job_title>/
+│           ├── job_listings/  # Complete job listings
+│           ├── groq_responses/ # AI analysis responses
+│           └── metadata/      # Job metadata
 ├── package.json
 ├── .env
 └── README.md
 ```
 
-## Output
+## Output Structure
 
-The scraper generates a JSON file containing detailed job information, including:
-- Basic job details (title, company, location, etc.)
-- Full job description
-- Parsed job description (analyzed by Groq API)
-- Application statistics
-- Job URL
+The scraper organizes the output data in the following structure:
+
+```
+artifacts/
+└── <board_name>/
+    └── <job_title>/
+        ├── job_listings/
+        │   └── job_listings_<timestamp>.json     # Complete job details
+        ├── groq_responses/
+        │   ├── groq_response_<jobId>.json       # Individual GROQ responses
+        │   └── all_groq_responses.json          # Combined GROQ responses
+        └── metadata/
+            └── metadata_<timestamp>.json         # Job metadata
+```
 
 ## Contributing
 
