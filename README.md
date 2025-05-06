@@ -1,40 +1,28 @@
 # Job Board Scraper
 
-A Node.js application that scrapes job listings from various remote job boards and analyzes them using the Groq API.
+A Next.js application that scrapes job listings from various remote job boards and analyzes them using the Groq API.
 
 ## Features
 
-- Scrapes job listings from multiple job boards:
+- Scrape job listings from multiple job boards:
   - RemoteOK
-  - WeWorkRemotely
+  - We Work Remotely
   - WellFound
-- Extracts detailed job information including:
-  - Job title
-  - Company name
-  - Location
-  - Salary (if available)
-  - Tags
-  - Full job description
-  - Application statistics
-- Uses Groq API to analyze and structure job descriptions
-- Saves results in organized directories:
-  - Complete job listings
-  - Individual GROQ responses
-  - Combined GROQ responses
-  - Job metadata
+- Analyze job descriptions using Groq API
+- Modern web interface for searching jobs
+- Store results in organized directory structure
 
 ## Prerequisites
 
-- Node.js 18 or higher
-- npm (Node Package Manager)
-- A Groq API key
+- Node.js 18+ and npm
+- Groq API key
 
-## Installation
+## Setup
 
 1. Clone the repository:
 ```bash
 git clone <repository-url>
-cd job-board-scraper
+cd job-board
 ```
 
 2. Install dependencies:
@@ -42,83 +30,90 @@ cd job-board-scraper
 npm install
 ```
 
-3. Install Playwright browser:
-```bash
-npx playwright install chromium
-```
-
-4. Create a `.env` file in the root directory and add your Groq API key:
+3. Create a `.env` file in the root directory and add your Groq API key:
 ```
 GROQ_API_KEY=your_groq_api_key_here
 ```
 
+4. Start the development server:
+```bash
+npm run dev
+```
+
+The application will be available at `http://localhost:3000`.
+
 ## Usage
 
-Run the scraper with default settings (RemoteOK board, DevOps Engineer search):
-```bash
-npm start
-```
+1. Open the web interface at `http://localhost:3000`
+2. Select a job board from the dropdown
+3. Enter a job title to search for
+4. Set the number of results to fetch (1-10)
+5. Click "Search Jobs"
 
-Or specify options:
-```bash
-npm start -- --board remoteok --title "DevOps Engineer" --limit 3
-```
-
-Available options:
-- `--board`: Job board to scrape (remoteok, weworkremotely, wellfound)
-- `--title`: Job title to search for
-- `--limit`: Number of jobs to process
+The application will:
+1. Scrape job listings from the selected board
+2. Process each job listing to extract full details
+3. Analyze job descriptions using Groq API
+4. Save results in the `artifacts` directory
+5. Display results in the web interface
 
 ## Project Structure
 
 ```
-job-board-scraper/
-├── src/
-│   ├── main.js                 # Main entry point
-│   └── job-boards/
-│       ├── base.js            # Base board class
-│       ├── remoteok/
-│       │   └── board.js       # RemoteOK implementation
-│       ├── weworkremotely/
-│       │   └── board.js       # WeWorkRemotely implementation
-│       └── wellfound/
-│           └── board.js       # WellFound implementation
-├── artifacts/                  # Scraped data storage
-│   └── <board_name>/
-│       └── <job_title>/
-│           ├── job_listings/  # Complete job listings
-│           ├── groq_responses/ # AI analysis responses
-│           └── metadata/      # Job metadata
-├── package.json
-├── .env
-└── README.md
+job-board/
+├── app/                    # Next.js app directory
+│   ├── api/               # API routes
+│   ├── page.tsx           # Main page
+│   └── layout.tsx         # Root layout
+├── lib/                   # Library code
+│   └── job-boards/        # Job board implementations
+├── artifacts/             # Scraped data storage
+└── public/               # Static assets
 ```
 
-## Output Structure
+## API Endpoints
 
-The scraper organizes the output data in the following structure:
+### POST /api/jobs
 
-```
-artifacts/
-└── <board_name>/
-    └── <job_title>/
-        ├── job_listings/
-        │   └── job_listings_<timestamp>.json     # Complete job details
-        ├── groq_responses/
-        │   ├── groq_response_<jobId>.json       # Individual GROQ responses
-        │   └── all_groq_responses.json          # Combined GROQ responses
-        └── metadata/
-            └── metadata_<timestamp>.json         # Job metadata
+Scrapes job listings based on the provided parameters.
+
+Request body:
+```json
+{
+  "board": "remoteok",
+  "title": "DevOps Engineer",
+  "limit": 3
+}
 ```
 
-## Contributing
+Response:
+```json
+[
+  {
+    "jobId": "...",
+    "position": "...",
+    "company": "...",
+    "location": "...",
+    "salary": "...",
+    "tags": [...],
+    "posted": "...",
+    "views": 0,
+    "applicants": 0,
+    "applyPercentage": 0,
+    "jobUrl": "...",
+    "description": "...",
+    "parsedDescription": {...}
+  }
+]
+```
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+## Development
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details. 
+MIT

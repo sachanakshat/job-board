@@ -1,0 +1,19 @@
+[2024-03-19 10:30:00] User Request:
+From now on, store every prompt which I give you in prompts.txt file. Store each prompt with timestamp and prompt body/request.
+
+Use MongoDB as my backend database to store all results. The connection string is stored in .env named as "MONGODB_CONNECTION_STRING".
+
+Create all the tables like job status queue table, final resultant JSON table, job_listings and artifacts table, etc.
+
+Try running the application and send the sample curl request- 
+
+The webscraping part may take time. So instead, create jobs logic, and return the job ID with the response.
+
+Next, use the same job ID to query status of job, or better check all the running jobs with a single API. This API should contain string of JobID and status.
+
+There should be an API to query the Job ID, and if the job is finished, return the response.
+
+Try running the sample cURL and fix the issue until you get the desired response via job ID
+
+[2024-03-19 11:30:00] User Request:
+Please modify the package.json, to kill any existing processes/process at port 3000 before starting npm run dev
