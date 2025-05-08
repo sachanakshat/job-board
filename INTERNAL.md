@@ -31,6 +31,108 @@ This is the internal reference for the **Job Board Scraper** tool. It details th
 
 ---
 
+## 🏗 Updated Microservice Architecture
+
+The application is now structured as a microservice architecture with the following components:
+
+### Services
+
+1. **NextJS Frontend Service**
+   - Handles the web interface
+   - Communicates with Python API for job operations
+   - Port: 3000
+
+2. **Python API Service**
+   - FastAPI-based backend service
+   - Handles job creation, status tracking, and results
+   - Integrates with job board scrapers
+   - Port: 8000
+
+3. **Redis Service**
+   - Job queue management
+   - Job status tracking
+   - Caching layer
+   - Port: 6379
+
+4. **MongoDB Service**
+   - Persistent storage for job results
+   - Job metadata storage
+   - Port: 27017
+
+### Data Flow
+
+1. **Job Creation**
+   ```
+   Client -> NextJS -> Python API -> Redis (Job Queue)
+   ```
+
+2. **Job Processing**
+   ```
+   Python API -> Job Board Scraper -> MongoDB (Results)
+   Python API -> Redis (Status Updates)
+   ```
+
+3. **Job Status/Results**
+   ```
+   Client -> NextJS -> Python API -> Redis/MongoDB -> Client
+   ```
+
+### API Endpoints
+
+#### Python API (FastAPI)
+
+1. **Create Job**
+   ```http
+   POST /api/jobs
+   Content-Type: application/json
+   
+   {
+     "board": "remoteok",
+     "title": "DevOps Engineer",
+     "limit": 3
+   }
+   ```
+
+2. **Get Job Status**
+   ```http
+   GET /api/jobs/{job_id}
+   ```
+
+3. **List All Jobs**
+   ```http
+   GET /api/jobs
+   ```
+
+### Job States
+
+1. **pending**: Job created, waiting to be processed
+2. **processing**: Job is being scraped and analyzed
+3. **completed**: Job processing finished successfully
+4. **failed**: Job processing encountered an error
+
+### Error Handling
+
+- All services implement proper error handling
+- Failed jobs are logged with error details
+- Retry mechanisms for transient failures
+- Circuit breakers for external service calls
+
+### Monitoring
+
+- Service health checks
+- Job processing metrics
+- Error rate tracking
+- Performance monitoring
+
+### Security
+
+- Environment variable configuration
+- CORS protection
+- API rate limiting
+- Secure service communication
+
+---
+
 ## 🧱 Architecture
 
 ```
@@ -268,3 +370,163 @@ Response:
 - `processing`: Job is currently being processed
 - `completed`: Job has been successfully processed
 - `failed`: Job processing failed
+
+## 📊 System Architecture Diagrams
+
+### Sequence Diagram
+```mermaid
+sequenceDiagram
+    participant Client
+    participant NextJS as NextJS Service
+    participant Redis as Redis Service
+    participant MongoDB as MongoDB Service
+    participant Scraper as Job Scraper Service
+    participant Groq as Groq API Service
+
+    Client->>NextJS: POST /api/jobs
+    NextJS->>Redis: Create Job (JobID)
+    Redis-->>NextJS: Return JobID
+    NextJS-->>Client: Return JobID
+
+    Client->>NextJS: GET /api/jobs/{jobId}
+    NextJS->>Redis: Check Job Status
+    Redis-->>NextJS: Return Status
+
+    loop Job Processing
+        Scraper->>NextJS: Fetch Job Details
+        NextJS->>Scraper: Return Job Config
+        Scraper->>Scraper: Scrape Job Board
+        Scraper->>Groq: Analyze Job Description
+        Groq-->>Scraper: Return Analysis
+        Scraper->>MongoDB: Store Results
+        Scraper->>Redis: Update Job Status
+    end
+
+    Client->>NextJS: GET /api/jobs/{jobId}
+    NextJS->>MongoDB: Fetch Results
+    MongoDB-->>NextJS: Return Results
+    NextJS-->>Client: Return Job Results
+```
+
+### Architecture Diagram
+```mermaid
+graph TD
+    Client[Client] --> NextJS[NextJS Service]
+    NextJS --> Redis[(Redis)]
+    NextJS --> MongoDB[(MongoDB)]
+    NextJS --> Scraper[Job Scraper Service]
+    Scraper --> Groq[Groq API Service]
+```
+
+## 🐳 Docker Configuration
+
+The application is containerized using Docker and orchestrated with Docker Compose. The following services are defined:
+
+1. **NextJS Service**: Frontend and API layer
+2. **Redis Service**: Job queue and caching
+3. **MongoDB Service**: Data persistence
+4. **Job Scraper Service**: Background job processing
+
+### Docker Compose Configuration
+```yaml
+version: '3.8'
+
+services:
+  nextjs:
+    build:
+      context: .
+      dockerfile: Dockerfile.nextjs
+    ports:
+      - "3000:3000"
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - MONGODB_URI=mongodb://mongodb:27017/jobboard
+      - GROQ_API_KEY=${GROQ_API_KEY}
+    depends_on:
+      - redis
+      - mongodb
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD}
+
+  scraper:
+    build:
+      context: .
+      dockerfile: Dockerfile.scraper
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - MONGODB_URI=mongodb://mongodb:27017/jobboard
+      - GROQ_API_KEY=${GROQ_API_KEY}
+    depends_on:
+      - redis
+      - mongodb
+
+volumes:
+  redis_data:
+  mongodb_data:
+```
+
+### Dockerfile.nextjs
+```dockerfile
+FROM node:18-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+
+RUN npm run build
+
+EXPOSE 3000
+
+CMD ["npm", "start"]
+```
+
+### Dockerfile.scraper
+```dockerfile
+FROM node:18-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+
+CMD ["node", "src/scraper.js"]
+```
+
+### Environment Variables (.env)
+```env
+GROQ_API_KEY=your_groq_api_key
+MONGO_ROOT_USERNAME=admin
+MONGO_ROOT_PASSWORD=secure_password
+```
+
+### Running the Application
+```bash
+# Build and start all services
+docker-compose up --build
+
+# View logs
+docker-compose logs -f
+
+# Stop all services
+docker-compose down
+```

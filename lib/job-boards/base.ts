@@ -4,6 +4,7 @@ import { join } from 'path';
 import { writeFile, mkdir } from 'fs/promises';
 import { existsSync } from 'fs';
 import { Browser, Page } from 'playwright';
+import { Job, JobBoard } from './types';
 
 dotenv.config();
 
@@ -36,19 +37,30 @@ export interface JobListing {
   parsedDescription?: any;
 }
 
-export abstract class BaseBoard {
+export abstract class BaseJobBoard implements JobBoard {
   protected jobTitle: string;
   protected baseDir: string;
-  public searchUrl: string;
+  public searchUrl: string = '';
 
   constructor(jobTitle: string) {
     this.jobTitle = jobTitle;
-    this.baseDir = join(process.cwd(), 'artifacts');
+    this.baseDir = this.getBaseDir();
+    this.searchUrl = this.generateSearchUrl();
   }
 
+  abstract getBaseDir(): string;
+  abstract generateSearchUrl(): string;
+  abstract extractJobListings(page: Page): Promise<Job[]>;
+  abstract processJob(job: Job, page: Page): Promise<Job | null>;
+
   protected async ensureDirectoryExists(path: string): Promise<void> {
-    if (!existsSync(path)) {
+    try {
       await mkdir(path, { recursive: true });
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(`Failed to create directory ${path}: ${error.message}`);
+      }
+      throw error;
     }
   }
 
@@ -160,6 +172,27 @@ Return a JSON object with your analysis. Do not include any markdown formatting 
     }
   }
 
-  abstract extractJobListings(page: Page): Promise<JobListing[]>;
-  abstract processJob(job: JobListing, browser: Browser): Promise<JobListing | null>;
+  protected getJobDirectory(jobId: string): string {
+    return join(this.baseDir, jobId);
+  }
+
+  protected parseJSON<T>(jsonStr: string): T | { error: string } {
+    try {
+      return JSON.parse(jsonStr) as T;
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(`JSON decode error: ${error.message}`);
+        console.error(`Problematic JSON string: ${jsonStr}`);
+        return { error: `JSON decode error: ${error.message}` };
+      }
+      return { error: 'Unknown JSON parsing error' };
+    }
+  }
+
+  protected async handleError(error: unknown): Promise<never> {
+    if (error instanceof Error) {
+      throw new Error(`Operation failed: ${error.message}`);
+    }
+    throw new Error('An unknown error occurred');
+  }
 } 

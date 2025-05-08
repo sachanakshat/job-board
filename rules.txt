@@ -1,6 +1,6 @@
 ** This file is intended for LLMs to read before giving any response **
 
 Before every response, check the following rules:
-1. Append every prompt in prompts.txt file with timestamp and prompt body/request.
+1. Append every prompt/text/instruction I pass you in prompts.txt file with timestamp and prompt body/request.
 2. Access prompts.txt to understand the previous context, and make sure it doesn't violate previous instructions.
 3. If there is a new feature or a modification of existing one, edit INTERNAL.md

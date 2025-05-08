@@ -1,23 +1,22 @@
 import mongoose from 'mongoose';
 
-declare global {
-  var mongoose: {
-    conn: typeof mongoose | null;
-    promise: Promise<typeof mongoose> | null;
-  };
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/jobboard';
+
+if (!MONGODB_URI) {
+  throw new Error(
+    'Please define the MONGODB_URI environment variable inside .env'
+  );
 }
 
-if (!process.env.MONGODB_CONNECTION_STRING) {
-  throw new Error('Please define the MONGODB_CONNECTION_STRING environment variable');
+interface Cached {
+  conn: typeof mongoose | null;
+  promise: Promise<typeof mongoose> | null;
 }
 
-const MONGODB_URI = process.env.MONGODB_CONNECTION_STRING;
-
-let cached = global.mongoose;
-
-if (!cached) {
-  cached = global.mongoose = { conn: null, promise: null };
-}
+let cached: Cached = {
+  conn: null,
+  promise: null,
+};
 
 export async function connectDB(): Promise<typeof mongoose> {
   if (cached.conn) {
@@ -26,10 +25,12 @@ export async function connectDB(): Promise<typeof mongoose> {
 
   if (!cached.promise) {
     const opts = {
-      bufferCommands: false,
+      bufferCommands: true,
     };
 
-    cached.promise = mongoose.connect(MONGODB_URI, opts);
+    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
+      return mongoose;
+    });
   }
 
   try {

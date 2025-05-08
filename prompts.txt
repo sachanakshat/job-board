@@ -17,3 +17,38 @@ Try running the sample cURL and fix the issue until you get the desired response
 
 [2024-03-19 11:30:00] User Request:
 Please modify the package.json, to kill any existing processes/process at port 3000 before starting npm run dev
+
+Rules for the Job Board Scraper Project:
+
+1. Project Structure:
+   - All services should be organized in the `services` directory
+   - Each service should have its own subdirectory
+   - Keep the root directory clean
+   - Maintain the archive directory for reference
+
+2. Backend Service:
+   - Use Python with FastAPI
+   - Implement job board scrapers
+   - Handle job processing and storage
+   - Provide REST API endpoints
+
+3. Database Services:
+   - Use Redis for job queue and temporary storage
+   - Use MongoDB for persistent storage
+   - Configure proper environment variables
+
+4. Containerization:
+   - Each service should have its own Dockerfile
+   - Use docker-compose for orchestration
+   - Follow best practices for Docker images
+
+5. Documentation:
+   - Keep INTERNAL.md updated with architecture changes
+   - Document API endpoints and usage
+   - Include setup instructions
+
+6. Development:
+   - Follow Python best practices
+   - Use type hints
+   - Write clean, maintainable code
+   - Handle errors appropriately
