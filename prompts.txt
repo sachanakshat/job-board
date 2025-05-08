@@ -52,3 +52,20 @@ Rules for the Job Board Scraper Project:
    - Use type hints
    - Write clean, maintainable code
    - Handle errors appropriately
+
+[2024-03-19 12:30:00] User Request:
+Follow this file- rules.txt
+Append this entire text to prompts.txt
+
+Do these things-
+1. Use Flask for the backend, instead of FastAPI. Use module type structure like defined in "lib" folder for equivalent NextJS.
+
+2. Create a NextJS service, named frontend, and move all relevant files- package.json, next.config, lib, etc to that microservice.
+
+3. Update all the architecture information in INTERNAL.md
+
+4. Create a test microservice, containing 2 type of test suites- frontend tests and backend tests. Backend tests should be able to test on both python and NextJS APIs. There should be proper error report and logging, and also a test summary/dashboard which tells pass/fail testcases. This test suite should be highly configurable, and I should be able to choose what tests to run from the command line itself.
+
+5. Create testcases in test-service, that should cover all the API endpoints we have for python microservice.
+
+Parent folder structure should be clean. Do not get rid of the archive folder.
