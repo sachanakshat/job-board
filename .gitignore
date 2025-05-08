@@ -43,8 +43,8 @@ Thumbs.db
 !package.json
 !package-lock.json
 
-# Archive
-archive/
+# # Archive
+# archive/
 
-# Project specific
-artifacts/
+# # Project specific
+# artifacts/
