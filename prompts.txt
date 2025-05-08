@@ -69,3 +69,14 @@ Do these things-
 5. Create testcases in test-service, that should cover all the API endpoints we have for python microservice.
 
 Parent folder structure should be clean. Do not get rid of the archive folder.
+
+[2024-03-19 13:30:00] User Request:
+Follow this file- rules.txt
+Append this entire text to prompts.txt
+
+Do these things-
+1. Make individual service level README.md explaining each service and flow
+
+2. Let's work on the backend microservice. Check if all the APIs are working properly as per their functionalities of what they are meant to do
+
+Update all the architecture changes in INTERNAL.md

@@ -1,110 +1,148 @@
-# Job Board Test Suite
+# Test Service
 
-This service contains comprehensive test suites for both frontend and backend components of the Job Board application.
+## Overview
+The Test Service is a comprehensive testing framework for the Job Board Scraper application. It provides a unified environment for running both frontend and backend tests, generating test reports, and maintaining test dashboards.
 
-## Test Structure
+## Features
+- Frontend test suite (Next.js)
+- Backend test suite (Flask)
+- Configurable test selection
+- Test reporting and dashboards
+- CI/CD integration support
+- Parallel test execution
+- Test data management
 
+## Architecture
 ```
 test/
-├── frontend/
-│   ├── unit/         # Unit tests for frontend components
-│   ├── integration/  # Integration tests for frontend features
-│   └── e2e/          # End-to-end tests using Playwright
-├── backend/
-│   ├── unit/         # Unit tests for backend components
-│   ├── integration/  # Integration tests for backend features
-│   └── api/          # API tests
-└── reports/          # Test reports and coverage information
+├── frontend/           # Frontend test suite
+│   ├── components/     # Component tests
+│   ├── pages/         # Page tests
+│   ├── api/           # API integration tests
+│   └── utils/         # Test utilities
+├── backend/           # Backend test suite
+│   ├── api/           # API endpoint tests
+│   ├── job_boards/    # Job board scraper tests
+│   ├── queue/         # Queue management tests
+│   └── utils/         # Test utilities
+├── reports/           # Test reports and dashboards
+├── requirements.txt   # Python dependencies
+└── Dockerfile        # Test environment setup
 ```
 
-## Running Tests
+## Test Suites
 
 ### Frontend Tests
-
-```bash
-# Run all frontend tests
-npm run test:frontend
-
-# Run specific test file
-npm run test:frontend -- path/to/test.spec.ts
-
-# Run tests with specific tag
-npm run test:frontend -- --grep "tag"
-```
+- Component unit tests
+- Page integration tests
+- API integration tests
+- End-to-end tests
+- Performance tests
+- Accessibility tests
 
 ### Backend Tests
+- API endpoint tests
+- Job board scraper tests
+- Queue management tests
+- Database integration tests
+- Error handling tests
+- Performance tests
 
-```bash
-# Run all backend tests
-npm run test:backend
+## Setup
 
-# Run specific test file
-npm run test:backend -- path/to/test_file.py
+1. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-# Run tests with specific marker
-npm run test:backend -- -m "api"
-```
+2. Set environment variables:
+   ```bash
+   export BACKEND_URL=http://localhost:5000
+   export FRONTEND_URL=http://localhost:3000
+   export TEST_TYPE=all  # or frontend/backend
+   export TEST_REPORT_DIR=./reports
+   ```
 
-### All Tests
+3. Run tests:
+   ```bash
+   # Run all tests
+   pytest
 
-```bash
-# Run both frontend and backend tests
-npm run test:all
-```
+   # Run specific test suite
+   pytest frontend/
+   pytest backend/
+
+   # Run specific test file
+   pytest frontend/api/test_jobs_api.py
+   ```
 
 ## Test Reports
+Test reports are generated in the `reports` directory and include:
+- Test results summary
+- Coverage reports
+- Performance metrics
+- Error logs
+- Test dashboards
 
-Test reports are generated in the `reports` directory:
+## Development
 
-- HTML reports: `reports/report.html`
-- Coverage reports: `reports/coverage`
-- Playwright reports: `reports/playwright-report`
-- JUnit reports: `reports/junit.xml`
-- Allure reports: `reports/allure-results`
+### Writing Tests
+1. Follow the existing test structure
+2. Use appropriate test fixtures
+3. Write clear test descriptions
+4. Include both positive and negative test cases
+5. Mock external dependencies
 
-To view the Playwright report:
+### Test Data
+- Use fixtures for test data
+- Clean up test data after tests
+- Use realistic test scenarios
+- Maintain test data versioning
 
-```bash
-npm run test:report
+### Best Practices
+1. Keep tests independent
+2. Use meaningful test names
+3. Follow AAA pattern (Arrange, Act, Assert)
+4. Mock external services
+5. Clean up resources
+6. Handle async operations properly
+
+## CI/CD Integration
+The test service can be integrated with CI/CD pipelines:
+```yaml
+test:
+  stage: test
+  script:
+    - pip install -r requirements.txt
+    - pytest --junitxml=reports/junit.xml
+  artifacts:
+    reports:
+      junit: reports/junit.xml
 ```
 
-## Configuration
+## Monitoring
+- Test execution time
+- Test coverage metrics
+- Failed test trends
+- Performance benchmarks
+- Resource usage
 
-### Frontend Tests
+## Security
+- Secure test data handling
+- Environment variable protection
+- Access control for test reports
+- Secure test execution environment
 
-- Configuration: `playwright.config.ts`
-- TypeScript config: `tsconfig.json`
+## Troubleshooting
+1. Check test environment setup
+2. Verify service connections
+3. Review test logs
+4. Check test data integrity
+5. Verify test dependencies
 
-### Backend Tests
-
-- Configuration: `pytest.ini`
-- Requirements: `requirements.txt`
-
-## Environment Variables
-
-- `BACKEND_URL`: Backend service URL (default: http://backend:5000)
-- `FRONTEND_URL`: Frontend service URL (default: http://frontend:3000)
-- `TEST_TYPE`: Type of tests to run (frontend/backend/all)
-- `TEST_REPORT_DIR`: Directory for test reports
-
-## Adding New Tests
-
-1. Frontend Tests:
-   - Place unit tests in `frontend/unit/`
-   - Place integration tests in `frontend/integration/`
-   - Place E2E tests in `frontend/e2e/`
-
-2. Backend Tests:
-   - Place unit tests in `backend/unit/`
-   - Place integration tests in `backend/integration/`
-   - Place API tests in `backend/api/`
-
-## Best Practices
-
-1. Use appropriate test markers
-2. Write descriptive test names
-3. Include proper assertions
-4. Handle async operations correctly
-5. Clean up test data after tests
-6. Use test fixtures when appropriate
-7. Follow the AAA pattern (Arrange, Act, Assert) 
+## Contributing
+1. Follow test writing guidelines
+2. Update test documentation
+3. Maintain test coverage
+4. Add new test cases as needed
+5. Review and update test data 

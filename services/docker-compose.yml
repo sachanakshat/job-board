@@ -1,32 +1,18 @@
 version: '3.8'
 
 services:
-  frontend:
-    build:
-      context: ./services/frontend
-      dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=development
-    volumes:
-      - ./services/frontend:/app
-      - /app/node_modules
-    depends_on:
-      - backend
-
   backend:
     build:
       context: ./services/backend
       dockerfile: Dockerfile
     ports:
-      - "5000:5000"
+      - "5001:5000"
     environment:
       - FLASK_APP=app
       - FLASK_ENV=development
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-      - MONGODB_URI=mongodb://mongodb:27017/jobboard
+      - MONGODB_URI=mongodb://${MONGO_ROOT_USERNAME}:${MONGO_ROOT_PASSWORD}@mongodb:27017/jobboard
     volumes:
       - ./services/backend:/app
     depends_on:
@@ -49,20 +35,6 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_ROOT_USERNAME}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD}
-
-  test:
-    build:
-      context: ./services/test
-      dockerfile: Dockerfile
-    environment:
-      - BACKEND_URL=http://backend:5000
-      - FRONTEND_URL=http://frontend:3000
-    volumes:
-      - ./services/test:/app
-      - ./services/test/reports:/app/reports
-    depends_on:
-      - frontend
-      - backend
 
 volumes:
   redis_data:

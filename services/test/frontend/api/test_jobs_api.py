@@ -1,6 +1,6 @@
 import pytest
 import requests
-from datetime import datetime
+from playwright.sync_api import sync_playwright
 
 # Test data
 TEST_JOB = {
@@ -10,7 +10,7 @@ TEST_JOB = {
 
 @pytest.fixture
 def api_url():
-    return "http://localhost:5000/api"
+    return "http://localhost:3000/api"
 
 @pytest.fixture
 def job_id(api_url):
@@ -73,21 +73,59 @@ def test_invalid_job_data(api_url):
     response = requests.post(f"{api_url}/jobs", json=invalid_job)
     assert response.status_code == 400
 
-def test_job_status_transitions(api_url, job_id):
-    """Test job status transitions"""
-    # Get initial status
-    response = requests.get(f"{api_url}/jobs/{job_id}")
-    assert response.status_code == 200
-    data = response.json()
-    assert data["status"] == "pending"
-    
-    # Wait for processing (this would be handled by the backend)
-    # For now, we'll just verify the initial state
-    
-    # Verify job data structure
-    assert "job_id" in data
-    assert "url" in data
-    assert "board_type" in data
-    assert "created_at" in data
-    assert "updated_at" in data
-    assert "result" in data 
+@pytest.mark.e2e
+def test_job_creation_flow():
+    """Test the complete job creation flow using Playwright"""
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        page = browser.new_page()
+        
+        # Navigate to the jobs page
+        page.goto("http://localhost:3000/jobs")
+        
+        # Fill in the job form
+        page.fill('input[name="url"]', TEST_JOB["url"])
+        page.select_option('select[name="board_type"]', TEST_JOB["board_type"])
+        
+        # Submit the form
+        page.click('button[type="submit"]')
+        
+        # Wait for success message
+        page.wait_for_selector('.success-message')
+        
+        # Verify job was created
+        assert page.locator('.success-message').is_visible()
+        
+        # Get the job ID from the success message
+        job_id = page.locator('.job-id').text_content()
+        assert job_id is not None
+        
+        # Verify job status
+        page.goto(f"http://localhost:3000/jobs/{job_id}")
+        assert page.locator('.job-status').text_content() == "pending"
+        
+        browser.close()
+
+@pytest.mark.e2e
+def test_job_list_page():
+    """Test the job list page using Playwright"""
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        page = browser.new_page()
+        
+        # Navigate to the jobs page
+        page.goto("http://localhost:3000/jobs")
+        
+        # Verify page title
+        assert page.title() == "Jobs | Job Board Scraper"
+        
+        # Verify job list table
+        assert page.locator('table').is_visible()
+        
+        # Verify table headers
+        headers = page.locator('th').all_text_contents()
+        assert "Job ID" in headers
+        assert "Status" in headers
+        assert "Created At" in headers
+        
+        browser.close() 
