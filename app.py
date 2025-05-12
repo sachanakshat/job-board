@@ -8,6 +8,7 @@ import os
 from pathlib import Path
 import logging
 from dotenv import load_dotenv
+import random
 
 # Set up logging
 logging.basicConfig(
@@ -40,24 +41,139 @@ def setup_artifacts_directory(job_type):
         "parsed": run_dir / "parsed"
     }
 
-async def scrape_jobs(job_type="devops_engineer", limit=3):
+async def human_like_delay():
+    """Add random delay to simulate human behavior."""
+    await asyncio.sleep(random.uniform(1.5, 3.5))
+
+async def human_like_mouse_movement(page, element):
+    """Simulate human-like mouse movement to an element."""
+    # Get element position
+    box = await element.bounding_box()
+    if not box:
+        return
+    
+    # Move mouse in a natural curve
+    current_x, current_y = 0, 0
+    target_x, target_y = box['x'] + box['width']/2, box['y'] + box['height']/2
+    
+    # Create a curved path
+    steps = random.randint(10, 20)
+    for i in range(steps):
+        progress = i / steps
+        # Add some randomness to the curve
+        curve_x = current_x + (target_x - current_x) * progress + random.uniform(-10, 10)
+        curve_y = current_y + (target_y - current_y) * progress + random.uniform(-10, 10)
+        await page.mouse.move(curve_x, curve_y)
+        await asyncio.sleep(random.uniform(0.01, 0.03))
+
+async def process_job_with_apply(job, page):
+    """Process a job and click apply button with human-like behavior."""
+    try:
+        # Navigate to job page
+        job_url = f"https://remoteok.com/remote-jobs/{job['job_id']}"
+        await page.goto(job_url)
+        await human_like_delay()
+        
+        # Scroll down slowly to simulate reading
+        for _ in range(3):
+            await page.mouse.wheel(0, random.randint(300, 500))
+            await human_like_delay()
+        
+        # Find and click apply button
+        apply_button = await page.query_selector('a.action-apply')
+        if apply_button:
+            # Move mouse to button naturally
+            await human_like_mouse_movement(page, apply_button)
+            await human_like_delay()
+            
+            # Click with random delay
+            await apply_button.click()
+            await human_like_delay()
+            
+            # Check if we need to handle any popups or forms
+            try:
+                # Wait for potential popup
+                popup = await page.wait_for_selector('.modal', timeout=5000)
+                if popup:
+                    # Close popup if it exists
+                    close_button = await popup.query_selector('.close')
+                    if close_button:
+                        await human_like_mouse_movement(page, close_button)
+                        await close_button.click()
+            except:
+                pass  # No popup found, continue
+        
+        return True
+    except Exception as e:
+        logger.error(f"Error processing job {job['job_id']}: {str(e)}")
+        return False
+
+async def scrape_jobs(job_type="devops_engineer", limit=3, cookies=None):
     """Scrape jobs and return the results."""
     dirs = setup_artifacts_directory(job_type)
     dirs["raw"].mkdir(exist_ok=True)
     dirs["parsed"].mkdir(exist_ok=True)
     
     async with async_playwright() as p:
-        # Launch browser in headed mode
+        # Launch browser in headed mode with additional arguments to avoid detection
         browser = await p.chromium.launch(
-            headless=False,  # Set to False to see the browser window
-            args=['--no-sandbox', '--disable-setuid-sandbox']
+            headless=False,
+            args=[
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+                '--disable-blink-features=AutomationControlled',
+                '--disable-infobars',
+                '--window-size=1920,1080',
+                '--start-maximized'
+            ]
         )
-        page = await browser.new_page()
+        
+        # Create context with additional settings
+        context = await browser.new_context(
+            user_agent='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36',
+            viewport={'width': 1920, 'height': 1080},
+            locale='en-US',
+            timezone_id='America/New_York',
+            permissions=['geolocation'],
+            extra_http_headers={
+                'Accept-Language': 'en-US,en;q=0.9',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                'Accept-Encoding': 'gzip, deflate, br',
+                'Connection': 'keep-alive',
+                'Upgrade-Insecure-Requests': '1',
+                'Sec-Fetch-Dest': 'document',
+                'Sec-Fetch-Mode': 'navigate',
+                'Sec-Fetch-Site': 'none',
+                'Sec-Fetch-User': '?1'
+            }
+        )
+        
+        # Set cookies if provided
+        if cookies:
+            await context.add_cookies([
+                {
+                    'name': cookie.split('=')[0].strip(),
+                    'value': cookie.split('=')[1].strip(),
+                    'domain': '.remoteok.com',
+                    'path': '/'
+                }
+                for cookie in cookies.split(';')
+            ])
+        
+        page = await context.new_page()
+        
+        # Add additional anti-detection measures
+        await page.add_init_script("""
+            Object.defineProperty(navigator, 'webdriver', {
+                get: () => undefined
+            });
+        """)
         
         try:
             # Navigate to remoteok.com/devops-jobs
             logger.info("Navigating to remoteok.com/remote-devops-jobs")
             await page.goto('https://remoteok.com/remote-devops-jobs')
+            await human_like_delay()
             
             # Wait for the job listings to load
             await page.wait_for_selector('tr.job')
@@ -92,6 +208,9 @@ async def scrape_jobs(job_type="devops_engineer", limit=3):
             for i, job in enumerate(jobs[:limit]):
                 logger.info(f"Processing job {i+1}/{limit}: {job['position']} at {job['company']}")
                 
+                # Process job and click apply
+                await process_job_with_apply(job, page)
+                
                 processed_job = await process_job(job, p)
                 if processed_job:
                     processed_jobs.append(processed_job)
@@ -103,7 +222,7 @@ async def scrape_jobs(job_type="devops_engineer", limit=3):
                     logger.info(f"Saved parsed job to {job_file}")
                 
                 if i < limit - 1:
-                    await asyncio.sleep(3)
+                    await human_like_delay()
             
             # Save combined processed jobs
             combined_file = dirs["run"] / "processed_jobs.json"
@@ -133,9 +252,10 @@ def start_scraping():
     try:
         job_type = request.json.get('job_type', 'devops_engineer')
         limit = request.json.get('limit', 3)
+        cookies = request.json.get('cookies')
         
         # Run the scraping process
-        result = asyncio.run(scrape_jobs(job_type, limit))
+        result = asyncio.run(scrape_jobs(job_type, limit, cookies))
         return jsonify(result)
     except Exception as e:
         return jsonify({

@@ -1,0 +1,99 @@
+{
+  "position": "Software Engineer III",
+  "company": "Nextech",
+  "location": "🌏 Worldwide",
+  "salary": "",
+  "tags": [
+    "Software",
+    "Full-Stack",
+    "Technical",
+    "Support",
+    "Code",
+    "Travel",
+    "Scrum",
+    "Accounting",
+    "JavaScript",
+    "Finance",
+    "Microsoft",
+    "Leader",
+    "Healthcare",
+    "Engineer"
+  ],
+  "posted": "2025-05-07T08:00:39+00:00",
+  "description": "",
+  "job_id": "1093125",
+  "parsed_description": {
+    "jobTitle": "Remote Software Engineer III",
+    "company": "Nextech",
+    "jobType": "Remote",
+    "industry": "Healthcare Technology",
+    "jobSummary": "Design and develop next-generation software for the Nextech product suite, working in a team environment with a focus on high-quality software products.",
+    "essentialSkills": {
+      "technicalSkills": [
+        "C#",
+        "JavaScript",
+        "SQL",
+        "Angular",
+        "SCRUM environment",
+        "Unit Tests",
+        "CI/CD"
+      ],
+      "softSkills": [
+        "Collaboration",
+        "Problem-solving",
+        "Analytical skills",
+        "Flexibility",
+        "Continuous improvement"
+      ]
+    },
+    "responsibilities": [
+      "Build software in a SCRUM environment",
+      "Perform mutual code reviews",
+      "Cooperate with team, scrum masters, and product owners",
+      "Carry out additional responsibilities as assigned"
+    ],
+    "minimumRequirements": {
+      "technicalRequirements": [
+        "Solid knowledge of C#, Angular, and SQL",
+        "5+ years industry experience",
+        "1+ year using Microsoft SQL Server and writing advanced queries",
+        "Experience with micro-service backends",
+        "Experience delivering a product to market"
+      ],
+      "softRequirements": [
+        "Desire to build zero-downtime deployments",
+        "Ability to write clean code",
+        "Love of unit testing",
+        "Personal drive to work in a dynamic environment"
+      ]
+    },
+    "workingEnvironment": {
+      "remote": true,
+      "travel": "Occasional long-distance or air travel",
+      "physicalDemands": "Significant time in front of a computer monitor"
+    },
+    "totalRewards": {
+      "salary": {
+        "estimated": true,
+        "range": "$60,000 - $85,000/year"
+      },
+      "benefits": [
+        "Generous annual bonus opportunity",
+        "401(k) with Employer Match",
+        "Flexible Time Off",
+        "10 paid holidays",
+        "Volunteer Time Off",
+        "Insurance (Medical, Dental, Vision)",
+        "Health Savings Account with employer match",
+        "Flexible Spending Account",
+        "100% Company-Paid Parental leave",
+        "100% Company-Paid Life Insurance and Short/Long Term Disability Insurance",
+        "Wellness Program"
+      ]
+    }
+  },
+  "job_url": "https://remoteok.com/remote-jobs/1093125",
+  "views": "👀 1,223 views",
+  "applicants": "144",
+  "apply_percentage": "12%"
+}
