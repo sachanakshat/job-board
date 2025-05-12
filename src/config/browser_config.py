@@ -27,6 +27,12 @@ BROWSER_CONFIG = {
     }
 }
 
+# Proxy configuration
+PROXY_CONFIG = {
+    'server': 'socks5://127.0.0.1:9150',
+    'fallback': True  # If True, will fall back to direct connection if proxy fails
+}
+
 ANTI_DETECTION_SCRIPT = """
     Object.defineProperty(navigator, 'webdriver', {
         get: () => undefined

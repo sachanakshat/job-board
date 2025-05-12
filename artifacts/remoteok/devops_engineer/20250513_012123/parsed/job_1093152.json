@@ -1,0 +1,97 @@
+{
+  "position": "Senior Data Analytics Engineer",
+  "company": "Fullscript",
+  "location": "🌏 Probably worldwide",
+  "salary": "",
+  "tags": [
+    "Design",
+    "Python",
+    "Technical",
+    "Support",
+    "Testing",
+    "Growth",
+    "Code",
+    "Financial",
+    "Cloud",
+    "Leader",
+    "Senior",
+    "Junior",
+    "Analytics",
+    "Health",
+    "Healthcare",
+    "Engineer",
+    "Engineering"
+  ],
+  "posted": "2025-05-10T21:00:03+00:00",
+  "description": "",
+  "job_id": "1093152",
+  "parsed_description": {
+    "jobTitle": "Remote Senior Data Analytics Engineer",
+    "company": "Fullscript",
+    "location": "Remote",
+    "jobDescription": "Building a data platform to drive business decision-making and growth, and provide key insights about practitioners and patients through analytics and advanced metrics.",
+    "keyResponsibilities": [
+      "Maintain, build, and deploy a Commercial data warehouse",
+      "Collaborate on initiatives across functions to understand and improve data",
+      "Write data transformation code in ELT pipelines",
+      "Mentor junior members of the data engineering team",
+      "Create and populate data models for downstream consumption",
+      "Apply advanced data engineering techniques to optimize performance and scalability",
+      "Leverage AI and machine learning to build models",
+      "Apply version control, testing, and continuous integration"
+    ],
+    "requirements": {
+      "experience": "5+ years in Data Analytics and/or Data Engineering",
+      "technicalSkills": [
+        "SQL",
+        "Python",
+        "dbt (data build tool)",
+        "Cloud Data warehouses (Snowflake, BigQuery, Redshift)",
+        "RDBMS (PostgreSQL, MySQL)",
+        "ELT/ETL process",
+        "Data modeling",
+        "Schema design",
+        "Optimization techniques"
+      ],
+      "softSkills": [
+        "Communication",
+        "Continuous learning"
+      ]
+    },
+    "bonusQualifications": [
+      "Experience with DevOps practices and tools",
+      "Practical experience building and deploying data models with AI and machine learning",
+      "Familiarity with machine learning concepts and frameworks",
+      "Previous experience in a leadership or mentorship role"
+    ],
+    "benefits": {
+      "salary": {
+        "estimated": true,
+        "range": "$67,500 - $120,000/year"
+      },
+      "otherBenefits": [
+        "Generous PTO",
+        "Competitive pay",
+        "RRSP match program",
+        "Flexible benefits package",
+        "Workplace wellness program",
+        "Training budget",
+        "Company-wide learning initiatives",
+        "Discount on Fullscript catalog of products",
+        "Flexible work options"
+      ]
+    },
+    "culture": {
+      "values": [
+        "Innovation",
+        "Growth",
+        "Balance"
+      ],
+      "workEnvironment": "Distributed team, Async, 4-day workweek"
+    }
+  },
+  "job_url": "https://remoteok.com/remote-jobs/1093152",
+  "views": "👀 447 views",
+  "applicants": "33",
+  "apply_percentage": "7%"
+}
