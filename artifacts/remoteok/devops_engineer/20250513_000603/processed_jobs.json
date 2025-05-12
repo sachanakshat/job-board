@@ -30,7 +30,7 @@
       "jobTitle": "Remote Senior Data Analytics Engineer",
       "company": "Fullscript",
       "location": "Remote",
-      "jobDescription": "Building a data platform to drive business decision-making and growth, and provide key insights about practitioners and patients",
+      "jobDescription": "Building a data platform to drive business decision-making and growth, and provide key insights about practitioners and patients through analytics and advanced metrics.",
       "keyResponsibilities": [
         "Maintain, build and deploy a Commercial data warehouse",
         "Collaborate on initiatives across functions to understand and improve data",
@@ -49,7 +49,7 @@
           "dbt (data build tool)",
           "Cloud Data warehouses (Snowflake, BigQuery, Redshift)",
           "RDBMS (PostgreSQL, MySQL)",
-          "ELT/ETL process",
+          "ELT/ELT process",
           "Data modeling, schema design, and optimization techniques"
         ],
         "softSkills": [
@@ -64,10 +64,11 @@
         "Previous experience in a leadership or mentorship role"
       ],
       "benefits": {
-        "compensation": {
-          "salary": "$67,500 - $120,000/year"
+        "salary": {
+          "estimated": true,
+          "range": "$67,500 - $120,000/year"
         },
-        "perks": [
+        "otherBenefits": [
           "Generous PTO",
           "Competitive pay",
           "RRSP match program",
@@ -77,12 +78,15 @@
           "Company-wide learning initiatives",
           "Discount on Fullscript catalog of products",
           "Flexible work options"
-        ],
-        "teamCulture": [
-          "Values innovation",
-          "Supports growth",
-          "Cares about balance"
         ]
+      },
+      "culture": {
+        "values": [
+          "Innovation",
+          "Growth",
+          "Balance"
+        ],
+        "workEnvironment": "Distributed team, Async, 4 day workweek"
       }
     },
     "job_url": "https://remoteok.com/remote-jobs/1093152",
@@ -243,7 +247,7 @@
         "Washington",
         "Wisconsin"
       ],
-      "jobDescription": "Design, implement, and deliver scalable infrastructure for government services. Develop end-to-end systems using DevOps, JavaScript, and Python.",
+      "jobDescription": "Design, implement, and deliver scalable infrastructure for government services. Develop end-to-end systems using DevOps, Javascript, and Python.",
       "responsibilities": [
         "Design, review, and build software with fellow engineers",
         "Collaborate with government partners and contractors to architect and deploy new systems",

@@ -30,7 +30,7 @@
       "jobTitle": "Remote Senior Data Analytics Engineer",
       "company": "Fullscript",
       "location": "Remote",
-      "jobDescription": "Building a data platform to drive business decision-making and growth, and provide key insights about practitioners and patients",
+      "jobDescription": "Building a data platform to drive business decision-making and growth, and provide key insights about practitioners and patients through analytics and advanced metrics.",
       "keyResponsibilities": [
         "Maintain, build and deploy a Commercial data warehouse",
         "Collaborate on initiatives across functions to understand and improve data",
@@ -49,7 +49,7 @@
           "dbt (data build tool)",
           "Cloud Data warehouses (Snowflake, BigQuery, Redshift)",
           "RDBMS (PostgreSQL, MySQL)",
-          "ELT/ETL process",
+          "ELT/ELT process",
           "Data modeling, schema design, and optimization techniques"
         ],
         "softSkills": [
@@ -64,10 +64,11 @@
         "Previous experience in a leadership or mentorship role"
       ],
       "benefits": {
-        "compensation": {
-          "salary": "$67,500 - $120,000/year"
+        "salary": {
+          "estimated": true,
+          "range": "$67,500 - $120,000/year"
         },
-        "perks": [
+        "otherBenefits": [
           "Generous PTO",
           "Competitive pay",
           "RRSP match program",
@@ -77,12 +78,15 @@
           "Company-wide learning initiatives",
           "Discount on Fullscript catalog of products",
           "Flexible work options"
-        ],
-        "teamCulture": [
-          "Values innovation",
-          "Supports growth",
-          "Cares about balance"
         ]
+      },
+      "culture": {
+        "values": [
+          "Innovation",
+          "Growth",
+          "Balance"
+        ],
+        "workEnvironment": "Distributed team, Async, 4-day workweek"
       }
     },
     "job_url": "https://remoteok.com/remote-jobs/1093152",
@@ -120,36 +124,48 @@
       "jobType": "Remote",
       "industry": "Healthcare Technology",
       "jobSummary": "Design and develop next-generation software for the Nextech product suite, working in a team environment with a focus on high-quality software products.",
-      "keyResponsibilities": [
-        "Build software in a SCRUM environment using C#, JavaScript, SQL, and JavaScript frameworks like Angular",
-        "Embrace best practices in software development (Code Reviews, Unit Tests, CI/CD)",
+      "essentialSkills": [
+        "C#",
+        "JavaScript",
+        "SQL",
+        "Angular",
+        "SCRUM environment",
+        "Code Reviews",
+        "Unit Tests",
+        "CI/CD"
+      ],
+      "responsibilities": [
+        "Build software using C#, JavaScript, SQL, and JavaScript frameworks like Angular",
+        "Embrace best practices in software development",
         "Perform mutual code reviews within the team",
         "Cooperate closely with the team, scrum masters, and product owners",
-        "Carry out additional responsibilities as assigned based on business needs"
+        "Carry out additional responsibilities as assigned"
       ],
       "minimumRequirements": {
-        "technicalSkills": [
-          "Solid knowledge of C#, Angular, and SQL",
-          "Experience with Microsoft SQL Server and writing advanced queries",
-          "Full-stack approach to development",
-          "Experience with robust, scalable micro-service backends"
+        "knowledge": [
+          "C#",
+          "Angular",
+          "SQL"
         ],
         "experience": {
-          "minimumYears": 5,
-          "relevantExperience": 1
+          "industry": 5,
+          "Microsoft SQL Server": 1
         },
-        "softSkills": [
-          "Desire to build zero-downtime deployments",
-          "Experience delivering a product to market",
-          "Ability to write clean code and love of unit testing",
-          "Personal drive to work in a dynamic environment",
-          "Appreciation for open and constructive dialog"
+        "skills": [
+          "full-stack approach to development",
+          "robust, scalable micro-service backends",
+          "zero-downtime deployments",
+          "delivering a product to market",
+          "clean code",
+          "unit testing"
         ]
       },
       "workingEnvironment": {
-        "remote": true,
-        "travel": "Occasional long-distance or air travel",
-        "physicalDemands": "Significant time in front of a computer monitor"
+        "type": "Remote",
+        "physicalDemands": [
+          "significant amount of time in front of a computer monitor",
+          "long-distance or air travel if needed"
+        ]
       },
       "totalRewards": {
         "salary": {

@@ -7,6 +7,15 @@ import time
 import re
 import os
 from dotenv import load_dotenv
+from pathlib import Path
+import logging
+
+# Set up logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
 # Load environment variables from .env file
 load_dotenv()
@@ -15,6 +24,25 @@ load_dotenv()
 GROQ_API_KEY = os.getenv('GROQ_API_KEY')
 if not GROQ_API_KEY:
     raise ValueError("GROQ_API_KEY environment variable is not set")
+
+def setup_artifacts_directory(job_type):
+    """Create and return the artifacts directory structure for this run."""
+    # Create base directories
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    base_dir = Path("artifacts/remoteok")
+    job_type_dir = base_dir / job_type
+    run_dir = job_type_dir / timestamp
+    
+    # Create directories if they don't exist
+    run_dir.mkdir(parents=True, exist_ok=True)
+    
+    return {
+        "base": base_dir,
+        "job_type": job_type_dir,
+        "run": run_dir,
+        "raw": run_dir / "raw",
+        "parsed": run_dir / "parsed"
+    }
 
 def clean_groq_response(text):
     """Clean the Groq response to extract valid JSON."""
@@ -165,58 +193,83 @@ async def process_job(job, playwright):
         await browser.close()
 
 async def main():
+    # Set up directories
+    job_type = "devops_engineer"
+    dirs = setup_artifacts_directory(job_type)
+    
+    # Create subdirectories for raw and parsed data
+    dirs["raw"].mkdir(exist_ok=True)
+    dirs["parsed"].mkdir(exist_ok=True)
+    
     async with async_playwright() as p:
         # Launch the main browser for job listings
         browser = await p.chromium.launch(headless=False)
         page = await browser.new_page()
         
-        # Navigate to remoteok.com/devops-jobs
-        await page.goto('https://remoteok.com/remote-devops-jobs')
-        
-        # Wait for the job listings to load
-        await page.wait_for_selector('tr.job')
-        
-        # Extract job information
-        jobs = await page.evaluate('''() => {
-            const jobs = [];
-            document.querySelectorAll('tr.job').forEach(job => {
-                const jobData = {
-                    position: job.querySelector('h2')?.textContent?.trim() || '',
-                    company: job.querySelector('h3')?.textContent?.trim() || '',
-                    location: job.querySelector('.location')?.textContent?.trim() || '',
-                    salary: job.querySelector('.salary')?.textContent?.trim() || '',
-                    tags: Array.from(job.querySelectorAll('.tags .tag')).map(tag => tag.textContent.trim()),
-                    posted: '',
-                    description: job.querySelector('.description')?.textContent?.trim() || '',
-                    job_id: job.getAttribute('data-id') || ''
-                };
-                jobs.push(jobData);
-            });
-            return jobs;
-        }''')
-        
-        # Close the main browser
-        await browser.close()
-        
-        # Process only the first 3 jobs
-        processed_jobs = []
-        for i, job in enumerate(jobs[:3]):
-            print(f"\nProcessing job {i+1}/3: {job['position']} at {job['company']}")
+        try:
+            # Navigate to remoteok.com/devops-jobs
+            logger.info("Navigating to remoteok.com/remote-devops-jobs")
+            await page.goto('https://remoteok.com/remote-devops-jobs')
             
-            # Process the job in a new browser window
-            processed_job = await process_job(job, p)
-            if processed_job:
-                processed_jobs.append(processed_job)
+            # Wait for the job listings to load
+            await page.wait_for_selector('tr.job')
             
-            # Wait 3 seconds before processing the next job
-            if i < 2:  # Don't wait after the last job
-                await asyncio.sleep(3)
-        
-        # Save to JSON file
-        with open('devops_jobs_detailed.json', 'w', encoding='utf-8') as f:
-            json.dump(processed_jobs, f, indent=2, ensure_ascii=False)
-        
-        print(f"\nProcessed {len(processed_jobs)} jobs. Data saved to devops_jobs_detailed.json")
+            # Extract job information
+            jobs = await page.evaluate('''() => {
+                const jobs = [];
+                document.querySelectorAll('tr.job').forEach(job => {
+                    const jobData = {
+                        position: job.querySelector('h2')?.textContent?.trim() || '',
+                        company: job.querySelector('h3')?.textContent?.trim() || '',
+                        location: job.querySelector('.location')?.textContent?.trim() || '',
+                        salary: job.querySelector('.salary')?.textContent?.trim() || '',
+                        tags: Array.from(job.querySelectorAll('.tags .tag')).map(tag => tag.textContent.trim()),
+                        posted: '',
+                        description: job.querySelector('.description')?.textContent?.trim() || '',
+                        job_id: job.getAttribute('data-id') || ''
+                    };
+                    jobs.push(jobData);
+                });
+                return jobs;
+            }''')
+            
+            # Save raw job listings
+            raw_jobs_file = dirs["raw"] / "job_listings.json"
+            with open(raw_jobs_file, 'w', encoding='utf-8') as f:
+                json.dump(jobs, f, indent=2, ensure_ascii=False)
+            logger.info(f"Saved raw job listings to {raw_jobs_file}")
+            
+            # Process only the first 3 jobs
+            processed_jobs = []
+            for i, job in enumerate(jobs[:3]):
+                logger.info(f"Processing job {i+1}/3: {job['position']} at {job['company']}")
+                
+                # Process the job in a new browser window
+                processed_job = await process_job(job, p)
+                if processed_job:
+                    processed_jobs.append(processed_job)
+                    
+                    # Save individual parsed job
+                    job_file = dirs["parsed"] / f"job_{processed_job['job_id']}.json"
+                    with open(job_file, 'w', encoding='utf-8') as f:
+                        json.dump(processed_job, f, indent=2, ensure_ascii=False)
+                    logger.info(f"Saved parsed job to {job_file}")
+                
+                # Wait 3 seconds before processing the next job
+                if i < 2:  # Don't wait after the last job
+                    await asyncio.sleep(3)
+            
+            # Save combined processed jobs
+            combined_file = dirs["run"] / "processed_jobs.json"
+            with open(combined_file, 'w', encoding='utf-8') as f:
+                json.dump(processed_jobs, f, indent=2, ensure_ascii=False)
+            logger.info(f"Saved combined processed jobs to {combined_file}")
+            
+        except Exception as e:
+            logger.error(f"An error occurred: {str(e)}")
+            raise
+        finally:
+            await browser.close()
 
 if __name__ == "__main__":
     asyncio.run(main())
