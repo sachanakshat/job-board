@@ -67,11 +67,12 @@ Response:
 Triggers a new job scraping process.
 
 ```bash
-curl -X POST http://localhost:5001/api/scrape \
-  -H "Content-Type: application/json" \
-  -d '{
+curl --location 'http://localhost:5001/api/scrape' \
+--header 'Content-Type: application/json' \
+--data '{
     "job_type": "devops_engineer",
-    "limit": 3
+    "limit": 3,
+    "cookies": "new_user=true; visit_count=1; logged_in_token=_299ee39711c88fbc0e11eed6; PHPSESSID=vit521t4r6aq2v91btq98ho0im; ref=sl; adShuffler=1"
   }'
 ```
 
@@ -122,4 +123,24 @@ artifacts/
                 ├── job_456.json
                 └── job_789.json
             └── processed_jobs.json  # Combined results
+
+
+
+
+job-board/
+├── app.py
+├── src/
+│   ├── __init__.py
+│   ├── config/
+│   │   ├── __init__.py
+│   │   └── browser_config.py
+│   ├── models/
+│   │   └── __init__.py
+│   ├── services/
+│   │   ├── __init__.py
+│   │   ├── job_processor.py
+│   │   └── scraper.py
+│   └── utils/
+│       ├── __init__.py
+│       └── human_behavior.py
 ``` 

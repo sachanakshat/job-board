@@ -1,0 +1,321 @@
+[
+  {
+    "position": "Senior Data Analytics Engineer",
+    "company": "Fullscript",
+    "location": "🌏 Probably worldwide",
+    "salary": "",
+    "tags": [
+      "Design",
+      "Python",
+      "Technical",
+      "Support",
+      "Testing",
+      "Growth",
+      "Code",
+      "Financial",
+      "Cloud",
+      "Leader",
+      "Senior",
+      "Junior",
+      "Analytics",
+      "Health",
+      "Healthcare",
+      "Engineer",
+      "Engineering"
+    ],
+    "posted": "2025-05-10T21:00:03+00:00",
+    "description": "",
+    "job_id": "1093152",
+    "parsed_description": {
+      "jobTitle": "Remote Senior Data Analytics Engineer",
+      "company": "Fullscript",
+      "location": "Remote",
+      "jobDescription": "Building a data platform to drive business decision-making and growth, and provide key insights about practitioners and patients through analytics and advanced metrics.",
+      "keyResponsibilities": [
+        "Maintain, build, and deploy a Commercial data warehouse",
+        "Collaborate on initiatives across functions to understand and improve data",
+        "Write data transformation code in ELT pipelines",
+        "Mentor junior members of the data engineering team",
+        "Create and populate data models for downstream consumption",
+        "Apply advanced data engineering techniques to optimize performance and scalability",
+        "Leverage AI and machine learning to build models",
+        "Apply version control, testing, and continuous integration"
+      ],
+      "requirements": {
+        "experience": "5+ years in Data Analytics and/or Data Engineering",
+        "technicalSkills": [
+          "SQL",
+          "Python",
+          "dbt (data build tool)",
+          "Cloud Data warehouses (Snowflake, BigQuery, Redshift)",
+          "RDBMS (PostgreSQL, MySQL)",
+          "ELT/ETL process",
+          "Data modeling",
+          "Schema design",
+          "Optimization techniques"
+        ],
+        "softSkills": [
+          "Communication",
+          "Continuous learning"
+        ]
+      },
+      "bonusQualifications": [
+        "Experience with DevOps practices and tools",
+        "Practical experience building and deploying data models with AI and machine learning",
+        "Familiarity with machine learning concepts and frameworks",
+        "Previous experience in a leadership or mentorship role"
+      ],
+      "benefits": {
+        "compensation": {
+          "salary": "$67,500 - $120,000/year"
+        },
+        "perks": [
+          "Generous PTO",
+          "Competitive pay",
+          "RRSP match program",
+          "Flexible benefits package",
+          "Workplace wellness program",
+          "Training budget",
+          "Company-wide learning initiatives",
+          "Discount on Fullscript catalog of products",
+          "Flexible work options"
+        ],
+        "healthInsurance": [
+          "Medical insurance",
+          "Dental insurance",
+          "Vision insurance"
+        ],
+        "retirementPlan": "401(k) matching"
+      },
+      "culture": {
+        "values": [
+          "Innovation",
+          "Growth",
+          "Balance"
+        ],
+        "workEnvironment": "Distributed team, Async, 4-day workweek"
+      }
+    },
+    "job_url": "https://remoteok.com/remote-jobs/1093152",
+    "views": "👀 447 views",
+    "applicants": "33",
+    "apply_percentage": "7%"
+  },
+  {
+    "position": "Software Engineer III",
+    "company": "Nextech",
+    "location": "🌏 Worldwide",
+    "salary": "",
+    "tags": [
+      "Software",
+      "Full-Stack",
+      "Technical",
+      "Support",
+      "Code",
+      "Travel",
+      "Scrum",
+      "Accounting",
+      "JavaScript",
+      "Finance",
+      "Microsoft",
+      "Leader",
+      "Healthcare",
+      "Engineer"
+    ],
+    "posted": "2025-05-07T08:00:39+00:00",
+    "description": "",
+    "job_id": "1093125",
+    "parsed_description": {
+      "jobTitle": "Remote Software Engineer III",
+      "company": "Nextech",
+      "jobType": "Remote",
+      "industry": "Healthcare Technology",
+      "jobSummary": "Design and develop next-generation software for the Nextech product suite, working in a team environment with a focus on high-quality software products.",
+      "keyResponsibilities": [
+        "Build software in a SCRUM environment using C#, JavaScript, SQL, and JavaScript frameworks like Angular",
+        "Embrace best practices in software development (Code Reviews, Unit Tests, CI/CD)",
+        "Perform mutual code reviews within the team",
+        "Cooperate closely with the team, scrum masters, and product owners",
+        "Carry out additional responsibilities as assigned based on business needs"
+      ],
+      "minimumRequirements": {
+        "technicalSkills": [
+          "Solid knowledge of C#, Angular, and SQL",
+          "Experience with Microsoft SQL Server and writing advanced queries",
+          "Full-stack approach to development",
+          "Experience with robust, scalable micro-service backends"
+        ],
+        "experience": {
+          "minimumYears": 5,
+          "relevantExperience": 1
+        },
+        "softSkills": [
+          "Desire to build zero-downtime deployments",
+          "Experience delivering a product to market",
+          "Ability to write clean code and love of unit testing",
+          "Personal drive to work in a dynamic environment",
+          "Appreciation for open and constructive dialog"
+        ]
+      },
+      "workingEnvironment": {
+        "remote": true,
+        "travel": "Occasional long-distance or air travel",
+        "physicalDemands": "Significant time in front of a computer monitor"
+      },
+      "totalRewards": {
+        "salary": {
+          "estimated": true,
+          "range": "$60,000 - $85,000/year"
+        },
+        "benefits": [
+          "Generous annual bonus opportunity",
+          "401(k) with Employer Match",
+          "Flexible Time Off",
+          "10 paid holidays",
+          "Volunteer Time Off",
+          "Insurance (Medical, Dental, Vision)",
+          "Health Savings Account with employer match",
+          "Flexible Spending Account",
+          "100% Company-Paid Parental leave",
+          "100% Company-Paid Life Insurance and Short/Long Term Disability Insurance",
+          "Wellness Program"
+        ]
+      }
+    },
+    "job_url": "https://remoteok.com/remote-jobs/1093125",
+    "views": "👀 1,223 views",
+    "applicants": "144",
+    "apply_percentage": "12%"
+  },
+  {
+    "position": "Senior Software Engineer",
+    "company": "Nava",
+    "location": "🌏 Worldwide",
+    "salary": "",
+    "tags": [
+      "Software",
+      "Design",
+      "Security",
+      "Python",
+      "Training",
+      "Consultancy",
+      "Technical",
+      "Support",
+      "Growth",
+      "Code",
+      "Web",
+      "Travel",
+      "Java",
+      "Cloud",
+      "Mobile",
+      "Senior",
+      "Health",
+      "Recruiting",
+      "Engineer",
+      "Engineering",
+      "Backend"
+    ],
+    "posted": "2025-05-07T08:00:03+00:00",
+    "description": "",
+    "job_id": "1093123",
+    "parsed_description": {
+      "jobTitle": "Remote Senior Software Engineer",
+      "company": "Nava",
+      "location": "Remote (USA)",
+      "specificLocations": [
+        "Alabama",
+        "Arizona",
+        "California",
+        "Colorado",
+        "DC",
+        "Florida",
+        "Georgia",
+        "Illinois",
+        "Louisiana",
+        "Maine",
+        "Maryland",
+        "Massachusetts",
+        "Michigan",
+        "Minnesota",
+        "Missouri",
+        "Nevada",
+        "North Carolina",
+        "New Jersey",
+        "New York",
+        "Oklahoma",
+        "Oregon",
+        "Pennsylvania",
+        "Rhode Island",
+        "South Carolina",
+        "Texas",
+        "Tennessee",
+        "Utah",
+        "Virginia",
+        "Washington",
+        "Wisconsin"
+      ],
+      "jobDescription": "Design, implement, and deliver scalable infrastructure for government services. Develop end-to-end systems using DevOps, JavaScript, and Python.",
+      "responsibilities": [
+        "Design, review, and build software with fellow engineers",
+        "Collaborate with government partners and contractors to architect and deploy new systems",
+        "Work in an agile manner to ship new features",
+        "Create tools and processes to automate development workflows",
+        "Write and review technical documentation and perform code reviews",
+        "Participate in on-call rotation to support production systems",
+        "Take part in hiring activities as needed"
+      ],
+      "requiredSkills": {
+        "experience": "At least 6 years of hands-on professional work experience building web applications and creating APIs",
+        "technicalSkills": [
+          "Backend & DevOps skills",
+          "Java Spring",
+          "Kubernetes",
+          "SQL/RDS",
+          "JavaScript",
+          "Python"
+        ],
+        "softSkills": [
+          "Strong communication and cross-functional collaboration skills",
+          "Systems thinker and advocate for users",
+          "Resourceful, reliable, and detail-oriented",
+          "Strategic thinking",
+          "Adaptive, empathetic, collaborative, and positive mindset"
+        ],
+        "otherSkills": [
+          "Understanding of web and mobile user interface design best practices",
+          "Familiarity with web accessibility standards"
+        ]
+      },
+      "salary": {
+        "range": "$135,900 - $171,000 a year"
+      },
+      "benefits": [
+        "Comprehensive medical, dental, and vision plans",
+        "Vacation, holidays, and floating days",
+        "Annual bonus",
+        "Parental leave",
+        "Wellness program",
+        "Virtual care",
+        "Sabbatical leave",
+        "401(k) match",
+        "Flexible work",
+        "Home office setup",
+        "Utility support",
+        "Learning opportunities",
+        "Development budget",
+        "Referral bonus",
+        "Commuter benefits",
+        "Disability, life, and accidental death insurance"
+      ],
+      "requirements": [
+        "Must be legally authorized to work in the United States",
+        "Must meet any other requirements for government contracts",
+        "Work authorization that doesn’t require visa sponsorship"
+      ]
+    },
+    "job_url": "https://remoteok.com/remote-jobs/1093123",
+    "views": "👀 1,235 views",
+    "applicants": "142",
+    "apply_percentage": "11%"
+  }
+]
