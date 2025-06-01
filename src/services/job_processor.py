@@ -3,6 +3,7 @@ from pathlib import Path
 import json
 from datetime import datetime
 import random
+import asyncio
 from ..utils.human_behavior import human_like_delay, human_like_mouse_movement
 from board import process_job
 
@@ -27,7 +28,7 @@ def setup_artifacts_directory(job_type):
     }
 
 async def process_job_with_apply(job, page):
-    """Process a job and click apply button with human-like behavior."""
+    """Process a job and wait for user to click apply button."""
     try:
         # Navigate to job page
         job_url = f"https://remoteok.com/remote-jobs/{job['job_id']}"
@@ -39,29 +40,27 @@ async def process_job_with_apply(job, page):
             await page.mouse.wheel(0, random.randint(300, 500))
             await human_like_delay()
         
-        # Find and click apply button
+        # Find apply button
         apply_button = await page.query_selector('a.action-apply')
         if apply_button:
-            # Move mouse to button naturally
-            await human_like_mouse_movement(page, apply_button)
-            await human_like_delay()
+            logger.info(f"Waiting for user to click apply button for job {job['job_id']}...")
             
-            # Click with random delay
-            await apply_button.click()
-            await human_like_delay()
-            
-            # Check if we need to handle any popups or forms
+            # Wait for user to click the apply button
             try:
-                # Wait for potential popup
-                popup = await page.wait_for_selector('.modal', timeout=5000)
-                if popup:
-                    # Close popup if it exists
-                    close_button = await popup.query_selector('.close')
-                    if close_button:
-                        await human_like_mouse_movement(page, close_button)
-                        await close_button.click()
-            except:
-                pass  # No popup found, continue
+                # Wait for the button to be clicked or page to be closed
+                await apply_button.wait_for_element_state('hidden', timeout=300000)  # 5 minutes timeout
+                
+                # Wait for 10 seconds after click
+                logger.info("Apply button clicked. Waiting for 10 seconds...")
+                await asyncio.sleep(10)
+                
+                # Close the page
+                await page.close()
+                logger.info("Page closed after apply.")
+                
+            except Exception as e:
+                logger.warning(f"Timeout waiting for apply button click: {str(e)}")
+                await page.close()
         
         return True
     except Exception as e:
