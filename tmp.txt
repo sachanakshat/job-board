@@ -1,0 +1,9 @@
+I am making a website named JobScanner. Make me a landing page for the same, using the below information about my company- JobScanner. Reuse Shadcn components @https://ui.shadcn.com/docs  (placed at frontend/components/ui) to design the page of the best design. Use dark color theme.
+
+The problem with current job search scenario is companies cannot find the right talent and job seekers cannot find the right job.
+
+This platfrom is made for all the job seekers, recruiters and people building organisations to find and connect with right talent.
+
+With the advent of so many individual job platforms, companies as well as individuals are lost between which platform to use. Companies will post on one platform, while job seekers would be searching on another. This platform, Job Scanner, it unites the entire ecosystem under one roof, making job application, application tracking, and tailoring your application to showcase the best of your talent.
+
+And the best part? It is as simple as one-click apply, on any job board

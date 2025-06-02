@@ -207,62 +207,62 @@ async def main():
         page = await browser.new_page()
         
         try:
-            # Navigate to remoteok.com/devops-jobs
+        # Navigate to remoteok.com/devops-jobs
             logger.info("Navigating to remoteok.com/remote-devops-jobs")
-            await page.goto('https://remoteok.com/remote-devops-jobs')
-            
-            # Wait for the job listings to load
-            await page.wait_for_selector('tr.job')
-            
-            # Extract job information
-            jobs = await page.evaluate('''() => {
-                const jobs = [];
-                document.querySelectorAll('tr.job').forEach(job => {
-                    const jobData = {
-                        position: job.querySelector('h2')?.textContent?.trim() || '',
-                        company: job.querySelector('h3')?.textContent?.trim() || '',
-                        location: job.querySelector('.location')?.textContent?.trim() || '',
-                        salary: job.querySelector('.salary')?.textContent?.trim() || '',
-                        tags: Array.from(job.querySelectorAll('.tags .tag')).map(tag => tag.textContent.trim()),
-                        posted: '',
-                        description: job.querySelector('.description')?.textContent?.trim() || '',
-                        job_id: job.getAttribute('data-id') || ''
-                    };
-                    jobs.push(jobData);
-                });
-                return jobs;
-            }''')
-            
+        await page.goto('https://remoteok.com/remote-devops-jobs')
+        
+        # Wait for the job listings to load
+        await page.wait_for_selector('tr.job')
+        
+        # Extract job information
+        jobs = await page.evaluate('''() => {
+            const jobs = [];
+            document.querySelectorAll('tr.job').forEach(job => {
+                const jobData = {
+                    position: job.querySelector('h2')?.textContent?.trim() || '',
+                    company: job.querySelector('h3')?.textContent?.trim() || '',
+                    location: job.querySelector('.location')?.textContent?.trim() || '',
+                    salary: job.querySelector('.salary')?.textContent?.trim() || '',
+                    tags: Array.from(job.querySelectorAll('.tags .tag')).map(tag => tag.textContent.trim()),
+                    posted: '',
+                    description: job.querySelector('.description')?.textContent?.trim() || '',
+                    job_id: job.getAttribute('data-id') || ''
+                };
+                jobs.push(jobData);
+            });
+            return jobs;
+        }''')
+        
             # Save raw job listings
             raw_jobs_file = dirs["raw"] / "job_listings.json"
             with open(raw_jobs_file, 'w', encoding='utf-8') as f:
                 json.dump(jobs, f, indent=2, ensure_ascii=False)
             logger.info(f"Saved raw job listings to {raw_jobs_file}")
-            
-            # Process only the first 3 jobs
-            processed_jobs = []
-            for i, job in enumerate(jobs[:3]):
+        
+        # Process only the first 3 jobs
+        processed_jobs = []
+        for i, job in enumerate(jobs[:3]):
                 logger.info(f"Processing job {i+1}/3: {job['position']} at {job['company']}")
-                
-                # Process the job in a new browser window
-                processed_job = await process_job(job, p)
-                if processed_job:
-                    processed_jobs.append(processed_job)
+            
+            # Process the job in a new browser window
+            processed_job = await process_job(job, p)
+            if processed_job:
+                processed_jobs.append(processed_job)
                     
                     # Save individual parsed job
                     job_file = dirs["parsed"] / f"job_{processed_job['job_id']}.json"
                     with open(job_file, 'w', encoding='utf-8') as f:
                         json.dump(processed_job, f, indent=2, ensure_ascii=False)
                     logger.info(f"Saved parsed job to {job_file}")
-                
-                # Wait 3 seconds before processing the next job
-                if i < 2:  # Don't wait after the last job
-                    await asyncio.sleep(3)
             
+            # Wait 3 seconds before processing the next job
+            if i < 2:  # Don't wait after the last job
+                await asyncio.sleep(3)
+        
             # Save combined processed jobs
             combined_file = dirs["run"] / "processed_jobs.json"
             with open(combined_file, 'w', encoding='utf-8') as f:
-                json.dump(processed_jobs, f, indent=2, ensure_ascii=False)
+            json.dump(processed_jobs, f, indent=2, ensure_ascii=False)
             logger.info(f"Saved combined processed jobs to {combined_file}")
             
         except Exception as e:
