@@ -1,11 +1,11 @@
 import { Button } from "./ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "./ui/card";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "./ui/hover-card";
 import { Badge } from "./ui/badge";
 import { Separator } from "./ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
-import { Sparkles } from "lucide-react";
+import { Sparkles, Check, X } from "lucide-react";
 
 export function LandingPage() {
   return (
@@ -144,6 +144,132 @@ export function LandingPage() {
                 </p>
               </CardContent>
             </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section className="py-16 bg-muted/30">
+        <div className="container mx-auto max-w-6xl px-4 md:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4">Simple, Transparent Pricing</h2>
+            <p className="text-xl text-muted-foreground">Choose the plan that's right for you</p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* Basic Plan */}
+            <Card className="relative">
+              <CardHeader>
+                <CardTitle>Basic</CardTitle>
+                <CardDescription>Perfect for job seekers</CardDescription>
+                <div className="mt-4">
+                  <span className="text-4xl font-bold">$0</span>
+                  <span className="text-muted-foreground">/month</span>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-3">
+                  <li className="flex items-center">
+                    <Check className="w-4 h-4 text-green-500 mr-2" />
+                    <span>Basic job search</span>
+                  </li>
+                  <li className="flex items-center">
+                    <Check className="w-4 h-4 text-green-500 mr-2" />
+                    <span>Apply to 5 jobs/month</span>
+                  </li>
+                  <li className="flex items-center">
+                    <Check className="w-4 h-4 text-green-500 mr-2" />
+                    <span>Basic profile</span>
+                  </li>
+                  <li className="flex items-center text-muted-foreground">
+                    <X className="w-4 h-4 mr-2" />
+                    <span>No priority support</span>
+                  </li>
+                </ul>
+              </CardContent>
+              <CardFooter>
+                <Button className="w-full" variant="outline">Get Started</Button>
+              </CardFooter>
+            </Card>
+
+            {/* Starter Plan */}
+            <Card className="relative border-primary">
+              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                <Badge className="px-3 py-1">Most Popular</Badge>
+              </div>
+              <CardHeader>
+                <CardTitle>Starter</CardTitle>
+                <CardDescription>For active job seekers</CardDescription>
+                <div className="mt-4">
+                  <span className="text-4xl font-bold">$9.99</span>
+                  <span className="text-muted-foreground">/month</span>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-3">
+                  <li className="flex items-center">
+                    <Check className="w-4 h-4 text-green-500 mr-2" />
+                    <span>Everything in Basic</span>
+                  </li>
+                  <li className="flex items-center">
+                    <Check className="w-4 h-4 text-green-500 mr-2" />
+                    <span>Unlimited job applications</span>
+                  </li>
+                  <li className="flex items-center">
+                    <Check className="w-4 h-4 text-green-500 mr-2" />
+                    <span>Advanced profile features</span>
+                  </li>
+                  <li className="flex items-center">
+                    <Check className="w-4 h-4 text-green-500 mr-2" />
+                    <span>Priority support</span>
+                  </li>
+                </ul>
+              </CardContent>
+              <CardFooter>
+                <Button className="w-full">Get Started</Button>
+              </CardFooter>
+            </Card>
+
+            {/* Professional Plan */}
+            <Card className="relative">
+              <CardHeader>
+                <CardTitle>Professional</CardTitle>
+                <CardDescription>For serious professionals</CardDescription>
+                <div className="mt-4">
+                  <span className="text-4xl font-bold">$19.99</span>
+                  <span className="text-muted-foreground">/month</span>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-3">
+                  <li className="flex items-center">
+                    <Check className="w-4 h-4 text-green-500 mr-2" />
+                    <span>Everything in Starter</span>
+                  </li>
+                  <li className="flex items-center">
+                    <Check className="w-4 h-4 text-green-500 mr-2" />
+                    <span>AI-powered job matching</span>
+                  </li>
+                  <li className="flex items-center">
+                    <Check className="w-4 h-4 text-green-500 mr-2" />
+                    <span>Resume optimization</span>
+                  </li>
+                  <li className="flex items-center">
+                    <Check className="w-4 h-4 text-green-500 mr-2" />
+                    <span>24/7 premium support</span>
+                  </li>
+                </ul>
+              </CardContent>
+              <CardFooter>
+                <Button className="w-full" variant="outline">Get Started</Button>
+              </CardFooter>
+            </Card>
+          </div>
+
+          <div className="mt-8 text-center">
+            <p className="text-muted-foreground">
+              All plans include a 14-day free trial. No credit card required.
+            </p>
           </div>
         </div>
       </section>
