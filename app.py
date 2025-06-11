@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 from src.services.scraper import scrape_jobs
 from pymongo import MongoClient
 import os
+from flask_cors import CORS
 
 # Set up logging
 logging.basicConfig(
@@ -20,6 +21,7 @@ load_dotenv()
 
 # Initialize Flask app
 app = Flask(__name__)
+CORS(app)
 
 # Initialize MongoDB connection
 mongo_client = MongoClient(os.getenv('MONGODB_CONNECTION_STRING'))
@@ -151,42 +153,33 @@ def start_scraping():
 
 @app.route('/api/jobs')
 def get_jobs():
-    """API endpoint to get the latest scraped jobs."""
+    """API endpoint to get jobs from MongoDB."""
     try:
-        # Get the latest run directory
-        base_dir = Path("artifacts/remoteok/devops_engineer")
-        if not base_dir.exists():
-            return jsonify({
-                "status": "error",
-                "message": "No jobs have been scraped yet"
-            }), 404
-            
-        # Get the most recent run directory
-        run_dirs = sorted([d for d in base_dir.iterdir() if d.is_dir()], reverse=True)
-        if not run_dirs:
-            return jsonify({
-                "status": "error",
-                "message": "No jobs have been scraped yet"
-            }), 404
-            
-        latest_run = run_dirs[0]
-        jobs_file = latest_run / "processed_jobs.json"
+        # Get query parameters for filtering
+        limit = request.args.get('limit', default=50, type=int)
+        skip = request.args.get('skip', default=0, type=int)
         
-        if not jobs_file.exists():
-            return jsonify({
-                "status": "error",
-                "message": "No processed jobs found in the latest run"
-            }), 404
-            
-        with open(jobs_file, 'r', encoding='utf-8') as f:
-            jobs = json.load(f)
-            
+        # Fetch jobs from MongoDB with pagination
+        jobs = list(jobs_collection.find(
+            {},
+            {'_id': 0}  # Exclude MongoDB _id field
+        ).skip(skip).limit(limit))
+        
+        # Get total count for pagination
+        total_jobs = jobs_collection.count_documents({})
+        
         return jsonify({
             "status": "success",
             "data": jobs,
-            "run_directory": str(latest_run)
+            "pagination": {
+                "total": total_jobs,
+                "limit": limit,
+                "skip": skip,
+                "has_more": (skip + limit) < total_jobs
+            }
         })
     except Exception as e:
+        logger.error(f"Error fetching jobs from MongoDB: {str(e)}")
         return jsonify({
             "status": "error",
             "message": str(e)
