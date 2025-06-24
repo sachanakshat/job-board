@@ -5,6 +5,7 @@ from pathlib import Path
 import logging
 from dotenv import load_dotenv
 from src.services.scraper import scrape_jobs
+from src.services.company_researcher import CompanyResearcher
 from pymongo import MongoClient
 import os
 from flask_cors import CORS
@@ -180,6 +181,148 @@ def get_jobs():
         })
     except Exception as e:
         logger.error(f"Error fetching jobs from MongoDB: {str(e)}")
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
+
+@app.route('/api/company-info', methods=['POST'])
+def get_company_info():
+    """API endpoint to get company information using LangChain with web search."""
+    try:
+        # Get request data
+        data = request.get_json()
+        
+        if not data:
+            return jsonify({
+                "status": "error",
+                "message": "Request body is required"
+            }), 400
+        
+        company_name = data.get('company_name')
+        company_location = data.get('company_location')
+        research_type = data.get('research_type', 'quick')  # 'quick' or 'comprehensive'
+        
+        if not company_name or not company_location:
+            return jsonify({
+                "status": "error",
+                "message": "Both company_name and company_location are required"
+            }), 400
+        
+        # Initialize company researcher
+        try:
+            researcher = CompanyResearcher()
+        except ValueError as e:
+            return jsonify({
+                "status": "error",
+                "message": str(e)
+            }), 500
+        
+        # Perform research based on type
+        if research_type == 'comprehensive':
+            result = researcher.research_company(company_name, company_location)
+        else:
+            result = researcher.get_quick_company_info(company_name, company_location)
+        
+        if result["status"] == "error":
+            return jsonify(result), 500
+        
+        return jsonify(result)
+        
+    except Exception as e:
+        logger.error(f"Error getting company info: {str(e)}")
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
+
+@app.route('/api/company-info/quick', methods=['POST'])
+def get_quick_company_info():
+    """API endpoint to get quick company information using web search."""
+    try:
+        # Get request data
+        data = request.get_json()
+        
+        if not data:
+            return jsonify({
+                "status": "error",
+                "message": "Request body is required"
+            }), 400
+        
+        company_name = data.get('company_name')
+        company_location = data.get('company_location')
+        
+        if not company_name or not company_location:
+            return jsonify({
+                "status": "error",
+                "message": "Both company_name and company_location are required"
+            }), 400
+        
+        # Initialize company researcher
+        try:
+            researcher = CompanyResearcher()
+        except ValueError as e:
+            return jsonify({
+                "status": "error",
+                "message": str(e)
+            }), 500
+        
+        # Get quick company info
+        result = researcher.get_quick_company_info(company_name, company_location)
+        
+        if result["status"] == "error":
+            return jsonify(result), 500
+        
+        return jsonify(result)
+        
+    except Exception as e:
+        logger.error(f"Error getting quick company info: {str(e)}")
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
+
+@app.route('/api/company-info/comprehensive', methods=['POST'])
+def get_comprehensive_company_info():
+    """API endpoint to get comprehensive company information using LangChain agent."""
+    try:
+        # Get request data
+        data = request.get_json()
+        
+        if not data:
+            return jsonify({
+                "status": "error",
+                "message": "Request body is required"
+            }), 400
+        
+        company_name = data.get('company_name')
+        company_location = data.get('company_location')
+        
+        if not company_name or not company_location:
+            return jsonify({
+                "status": "error",
+                "message": "Both company_name and company_location are required"
+            }), 400
+        
+        # Initialize company researcher
+        try:
+            researcher = CompanyResearcher()
+        except ValueError as e:
+            return jsonify({
+                "status": "error",
+                "message": str(e)
+            }), 500
+        
+        # Get comprehensive company info
+        result = researcher.research_company(company_name, company_location)
+        
+        if result["status"] == "error":
+            return jsonify(result), 500
+        
+        return jsonify(result)
+        
+    except Exception as e:
+        logger.error(f"Error getting comprehensive company info: {str(e)}")
         return jsonify({
             "status": "error",
             "message": str(e)
