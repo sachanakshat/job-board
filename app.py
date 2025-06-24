@@ -328,5 +328,51 @@ def get_comprehensive_company_info():
             "message": str(e)
         }), 500
 
+@app.route('/api/company-info/structured', methods=['POST'])
+def get_structured_company_info():
+    """API endpoint to get structured company information with source links."""
+    try:
+        # Get request data
+        data = request.get_json()
+        
+        if not data:
+            return jsonify({
+                "status": "error",
+                "message": "Request body is required"
+            }), 400
+        
+        company_name = data.get('company_name')
+        company_location = data.get('company_location')
+        
+        if not company_name or not company_location:
+            return jsonify({
+                "status": "error",
+                "message": "Both company_name and company_location are required"
+            }), 400
+        
+        # Initialize company researcher
+        try:
+            researcher = CompanyResearcher()
+        except ValueError as e:
+            return jsonify({
+                "status": "error",
+                "message": str(e)
+            }), 500
+        
+        # Get structured company info
+        result = researcher.research_company_structured(company_name, company_location)
+        
+        if result["status"] == "error":
+            return jsonify(result), 500
+        
+        return jsonify(result)
+        
+    except Exception as e:
+        logger.error(f"Error getting structured company info: {str(e)}")
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001, debug=True) 
