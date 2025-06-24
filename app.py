@@ -188,7 +188,7 @@ def get_jobs():
 
 @app.route('/api/company-info', methods=['POST'])
 def get_company_info():
-    """API endpoint to get company information using LangChain with web search."""
+    """API endpoint to get company information using configurable providers."""
     try:
         # Get request data
         data = request.get_json()
@@ -202,6 +202,8 @@ def get_company_info():
         company_name = data.get('company_name')
         company_location = data.get('company_location')
         research_type = data.get('research_type', 'quick')  # 'quick' or 'comprehensive'
+        search_provider = data.get('search_provider', 'groq')  # 'groq' or 'gemini'
+        llm_provider = data.get('llm_provider', 'groq')  # 'groq' or 'gemini'
         
         if not company_name or not company_location:
             return jsonify({
@@ -209,9 +211,12 @@ def get_company_info():
                 "message": "Both company_name and company_location are required"
             }), 400
         
-        # Initialize company researcher
+        # Initialize company researcher with specified providers
         try:
-            researcher = CompanyResearcher()
+            researcher = CompanyResearcher(
+                search_provider=search_provider,
+                llm_provider=llm_provider
+            )
         except ValueError as e:
             return jsonify({
                 "status": "error",
@@ -238,7 +243,7 @@ def get_company_info():
 
 @app.route('/api/company-info/quick', methods=['POST'])
 def get_quick_company_info():
-    """API endpoint to get quick company information using web search."""
+    """API endpoint to get quick company information using configurable providers."""
     try:
         # Get request data
         data = request.get_json()
@@ -251,6 +256,8 @@ def get_quick_company_info():
         
         company_name = data.get('company_name')
         company_location = data.get('company_location')
+        search_provider = data.get('search_provider', 'groq')  # 'groq' or 'gemini'
+        llm_provider = data.get('llm_provider', 'groq')  # 'groq' or 'gemini'
         
         if not company_name or not company_location:
             return jsonify({
@@ -258,9 +265,12 @@ def get_quick_company_info():
                 "message": "Both company_name and company_location are required"
             }), 400
         
-        # Initialize company researcher
+        # Initialize company researcher with specified providers
         try:
-            researcher = CompanyResearcher()
+            researcher = CompanyResearcher(
+                search_provider=search_provider,
+                llm_provider=llm_provider
+            )
         except ValueError as e:
             return jsonify({
                 "status": "error",
@@ -284,7 +294,7 @@ def get_quick_company_info():
 
 @app.route('/api/company-info/comprehensive', methods=['POST'])
 def get_comprehensive_company_info():
-    """API endpoint to get comprehensive company information using LangChain agent."""
+    """API endpoint to get comprehensive company information using configurable providers."""
     try:
         # Get request data
         data = request.get_json()
@@ -297,6 +307,8 @@ def get_comprehensive_company_info():
         
         company_name = data.get('company_name')
         company_location = data.get('company_location')
+        search_provider = data.get('search_provider', 'groq')  # 'groq' or 'gemini'
+        llm_provider = data.get('llm_provider', 'groq')  # 'groq' or 'gemini'
         
         if not company_name or not company_location:
             return jsonify({
@@ -304,9 +316,12 @@ def get_comprehensive_company_info():
                 "message": "Both company_name and company_location are required"
             }), 400
         
-        # Initialize company researcher
+        # Initialize company researcher with specified providers
         try:
-            researcher = CompanyResearcher()
+            researcher = CompanyResearcher(
+                search_provider=search_provider,
+                llm_provider=llm_provider
+            )
         except ValueError as e:
             return jsonify({
                 "status": "error",
@@ -330,7 +345,7 @@ def get_comprehensive_company_info():
 
 @app.route('/api/company-info/structured', methods=['POST'])
 def get_structured_company_info():
-    """API endpoint to get structured company information with source links."""
+    """API endpoint to get structured company information with configurable providers."""
     try:
         # Get request data
         data = request.get_json()
@@ -343,6 +358,8 @@ def get_structured_company_info():
         
         company_name = data.get('company_name')
         company_location = data.get('company_location')
+        search_provider = data.get('search_provider', 'groq')  # 'groq' or 'gemini'
+        llm_provider = data.get('llm_provider', 'groq')  # 'groq' or 'gemini'
         
         if not company_name or not company_location:
             return jsonify({
@@ -350,9 +367,12 @@ def get_structured_company_info():
                 "message": "Both company_name and company_location are required"
             }), 400
         
-        # Initialize company researcher
+        # Initialize company researcher with specified providers
         try:
-            researcher = CompanyResearcher()
+            researcher = CompanyResearcher(
+                search_provider=search_provider,
+                llm_provider=llm_provider
+            )
         except ValueError as e:
             return jsonify({
                 "status": "error",
@@ -369,6 +389,26 @@ def get_structured_company_info():
         
     except Exception as e:
         logger.error(f"Error getting structured company info: {str(e)}")
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
+
+@app.route('/api/providers', methods=['GET'])
+def get_available_providers():
+    """API endpoint to get available search and LLM providers."""
+    try:
+        # Initialize a default researcher to get provider info
+        researcher = CompanyResearcher()
+        providers = researcher.get_available_providers()
+        
+        return jsonify({
+            "status": "success",
+            "providers": providers
+        })
+        
+    except Exception as e:
+        logger.error(f"Error getting available providers: {str(e)}")
         return jsonify({
             "status": "error",
             "message": str(e)
