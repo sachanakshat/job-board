@@ -7,8 +7,8 @@ from langchain_community.tools import DuckDuckGoSearchRun
 from langchain.agents import initialize_agent, AgentType
 from langchain.prompts import PromptTemplate
 from langchain.schema import HumanMessage
-import requests
-from bs4 import BeautifulSoup
+import asyncio
+from playwright.async_api import async_playwright
 
 logger = logging.getLogger(__name__)
 
@@ -64,30 +64,88 @@ Search for the most recent and reliable information about this company.
 """
         )
     
-    def _fallback_search(self, query: str) -> str:
+    async def _playwright_search(self, query: str) -> str:
         """
-        Fallback search method using direct web scraping when DuckDuckGo is rate limited.
+        Perform Google search using Playwright for better reliability.
         """
         try:
-            # Use a simple search approach
-            search_url = f"https://www.google.com/search?q={query.replace(' ', '+')}"
-            headers = {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-            }
-            
-            response = requests.get(search_url, headers=headers, timeout=10)
-            response.raise_for_status()
-            
-            soup = BeautifulSoup(response.text, 'html.parser')
-            
-            # Extract search results (this is a simplified approach)
-            search_results = []
-            for result in soup.find_all('div', class_='BNeawe s3v9rd AP7Wnd'):
-                if result.text.strip():
-                    search_results.append(result.text.strip())
-            
-            return " ".join(search_results[:5])  # Return first 5 results
-            
+            async with async_playwright() as p:
+                # Launch browser
+                browser = await p.chromium.launch(headless=True)
+                page = await browser.new_page()
+                
+                # Set user agent to avoid detection
+                await page.set_extra_http_headers({
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+                })
+                
+                # Navigate to Google search
+                search_url = f"https://www.google.com/search?q={query.replace(' ', '+')}"
+                await page.goto(search_url, wait_until='networkidle')
+                
+                # Wait for search results to load
+                await page.wait_for_selector('div[id="search"]', timeout=10000)
+                
+                # Extract search results
+                search_results = []
+                
+                # Try multiple selectors for different Google layouts
+                selectors = [
+                    'div[data-sokoban-container] div[data-ved] div[data-content-feature="1"]',
+                    'div.g div[data-hveid]',
+                    'div[jscontroller] div[data-ved]',
+                    'div[data-ved] div[data-content-feature="1"]',
+                    'div.g div[data-hveid] div[data-content-feature="1"]'
+                ]
+                
+                for selector in selectors:
+                    try:
+                        elements = await page.query_selector_all(selector)
+                        if elements:
+                            for element in elements[:5]:  # Get first 5 results
+                                text = await element.inner_text()
+                                if text.strip() and len(text.strip()) > 50:
+                                    search_results.append(text.strip())
+                            break
+                    except Exception as e:
+                        logger.debug(f"Selector {selector} failed: {str(e)}")
+                        continue
+                
+                # If no results found with specific selectors, try a broader approach
+                if not search_results:
+                    try:
+                        # Get all text content from the main search area
+                        main_content = await page.query_selector('#search')
+                        if main_content:
+                            text = await main_content.inner_text()
+                            # Split by lines and filter meaningful content
+                            lines = [line.strip() for line in text.split('\n') if len(line.strip()) > 30]
+                            search_results = lines[:10]  # Get first 10 meaningful lines
+                    except Exception as e:
+                        logger.debug(f"Broad search approach failed: {str(e)}")
+                
+                await browser.close()
+                
+                if search_results:
+                    return " ".join(search_results)
+                else:
+                    return f"Unable to extract search results for: {query}"
+                    
+        except Exception as e:
+            logger.warning(f"Playwright search failed: {str(e)}")
+            return f"Unable to perform web search for: {query}"
+    
+    def _fallback_search(self, query: str) -> str:
+        """
+        Fallback search method using Playwright for Google search.
+        """
+        try:
+            # Run the async Playwright search
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            result = loop.run_until_complete(self._playwright_search(query))
+            loop.close()
+            return result
         except Exception as e:
             logger.warning(f"Fallback search failed: {str(e)}")
             return f"Unable to perform web search for: {query}"
@@ -96,20 +154,25 @@ Search for the most recent and reliable information about this company.
         """
         Search with retry mechanism to handle rate limits.
         """
-        for attempt in range(max_retries):
-            try:
-                result = self.search_tool.run(query)
-                return result
-            except Exception as e:
-                if "Ratelimit" in str(e) and attempt < max_retries - 1:
-                    logger.warning(f"Rate limit hit, retrying in {2 ** attempt} seconds...")
-                    time.sleep(2 ** attempt)  # Exponential backoff
-                    continue
-                else:
-                    logger.warning(f"Search failed, using fallback: {str(e)}")
-                    return self._fallback_search(query)
-        
+        # Temporarily force fallback search for testing
+        logger.info("Using Playwright fallback search for testing")
         return self._fallback_search(query)
+        
+        # Original code (commented out for testing):
+        # for attempt in range(max_retries):
+        #     try:
+        #         result = self.search_tool.run(query)
+        #         return result
+        #     except Exception as e:
+        #         if "Ratelimit" in str(e) and attempt < max_retries - 1:
+        #             logger.warning(f"Rate limit hit, retrying in {2 ** attempt} seconds...")
+        #             time.sleep(2 ** attempt)  # Exponential backoff
+        #             continue
+        #         else:
+        #             logger.warning(f"Search failed, using fallback: {str(e)}")
+        #             return self._fallback_search(query)
+        # 
+        # return self._fallback_search(query)
     
     def research_company(self, company_name: str, company_location: str) -> Dict[str, Any]:
         """
