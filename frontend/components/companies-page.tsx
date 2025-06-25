@@ -31,6 +31,7 @@ interface CompanyResearchResult {
     }
   }
   all_sources?: string[]
+  urls?: string[]
   summary?: {
     total_sections: number
     sections_with_data: number
@@ -40,15 +41,35 @@ interface CompanyResearchResult {
 }
 
 interface AvailableProviders {
-  search_providers: string[]
   llm_providers: string[]
+  research_types: string[]
+}
+
+// Helper function to check if a string is valid JSON
+function isJsonString(str: string): boolean {
+  try {
+    JSON.parse(str)
+    return true
+  } catch (e) {
+    return false
+  }
+}
+
+// Helper function to parse JSON string to sections format
+function parseJsonToSections(jsonString: string): { [key: string]: { content: string; sources: string[] } } {
+  try {
+    const parsed = JSON.parse(jsonString)
+    return parsed
+  } catch (e) {
+    console.error('Failed to parse JSON string:', e)
+    return {}
+  }
 }
 
 export function CompaniesPage() {
   const [companyName, setCompanyName] = useState("")
   const [companyLocation, setCompanyLocation] = useState("")
   const [researchType, setResearchType] = useState<"quick" | "comprehensive" | "structured">("quick")
-  const [searchProvider, setSearchProvider] = useState("groq")
   const [llmProvider, setLlmProvider] = useState("groq")
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<CompanyResearchResult | null>(null)
@@ -87,23 +108,32 @@ export function CompaniesPage() {
     setResult(null)
 
     try {
-      const endpoint = researchType === "comprehensive" 
-        ? "/api/company-info/comprehensive" 
-        : researchType === "structured" 
-          ? "/api/company-info/structured" 
-          : "/api/company-info/quick"
+      const endpoint = researchType === "structured" 
+        ? "/api/company-info/structured" 
+        : "/api/company-info"
+
+      const requestBody: {
+        company_name: string
+        company_location: string
+        llm_provider: string
+        research_type?: string
+      } = {
+        company_name: companyName.trim(),
+        company_location: companyLocation.trim(),
+        llm_provider: llmProvider,
+      }
+
+      // Add research_type for non-structured requests
+      if (researchType !== "structured") {
+        requestBody.research_type = researchType
+      }
 
       const response = await fetch(`http://localhost:5001${endpoint}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          company_name: companyName.trim(),
-          company_location: companyLocation.trim(),
-          search_provider: searchProvider,
-          llm_provider: llmProvider,
-        }),
+        body: JSON.stringify(requestBody),
       })
 
       const data = await response.json()
@@ -145,8 +175,6 @@ export function CompaniesPage() {
           setCompanyLocation={setCompanyLocation}
           researchType={researchType}
           setResearchType={setResearchType}
-          searchProvider={searchProvider}
-          setSearchProvider={setSearchProvider}
           llmProvider={llmProvider}
           setLlmProvider={setLlmProvider}
           availableProviders={availableProviders}
@@ -183,7 +211,7 @@ export function CompaniesPage() {
             )}
             
             {/* Comprehensive Research Results */}
-            {result.research_results && (
+            {result.research_results && !result.sections && (
               <Card className="border-0 shadow-xl">
                 <CardHeader className="bg-gradient-to-r from-purple-500/10 to-purple-500/5 rounded-t-lg">
                   <div className="flex items-center gap-3">
@@ -220,7 +248,7 @@ export function CompaniesPage() {
             )}
 
             {/* Structured Research Results */}
-            {result.sections && (
+            {(result.sections || (result.research_results && isJsonString(result.research_results))) && (
               <div className="space-y-6">
                 {/* Summary Stats */}
                 {result.summary && (
@@ -232,16 +260,16 @@ export function CompaniesPage() {
 
                 {/* Structured Sections */}
                 <CompanySectionGrid
-                  sections={result.sections}
-                  allSources={result.all_sources}
+                  sections={result.sections || (result.research_results ? parseJsonToSections(result.research_results) : {})}
+                  allSources={result.all_sources || result.urls || []}
                   information=""
                   showRawContent={false}
                   setShowRawContent={() => {}}
                 />
 
                 {/* All Sources */}
-                {result.all_sources && result.all_sources.length > 0 && (
-                  <CompanySourcesCard sources={result.all_sources} />
+                {(result.all_sources || result.urls) && (result.all_sources || result.urls)!.length > 0 && (
+                  <CompanySourcesCard sources={result.all_sources || result.urls || []} />
                 )}
               </div>
             )}

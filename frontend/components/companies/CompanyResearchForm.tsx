@@ -14,11 +14,9 @@ interface CompanyResearchFormProps {
   setCompanyLocation: (v: string) => void
   researchType: "quick" | "comprehensive" | "structured"
   setResearchType: (v: "quick" | "comprehensive" | "structured") => void
-  searchProvider: string
-  setSearchProvider: (v: string) => void
   llmProvider: string
   setLlmProvider: (v: string) => void
-  availableProviders: { search_providers: string[]; llm_providers: string[] } | null
+  availableProviders: { llm_providers: string[]; research_types: string[] } | null
   loading: boolean
   showAdvancedOptions: boolean
   setShowAdvancedOptions: (v: boolean) => void
@@ -32,8 +30,6 @@ export function CompanyResearchForm({
   setCompanyLocation,
   researchType,
   setResearchType,
-  searchProvider,
-  setSearchProvider,
   llmProvider,
   setLlmProvider,
   availableProviders,
@@ -148,30 +144,12 @@ export function CompanyResearchForm({
             </Button>
             
             {showAdvancedOptions && (
-              <div className="grid md:grid-cols-2 gap-6 p-6 bg-muted/30 rounded-lg">
+              <div className="p-6 bg-muted/30 rounded-lg">
                 <div className="space-y-3">
-                  <Label htmlFor="search-provider" className="text-sm font-semibold">Search Provider</Label>
-                  <Select value={searchProvider} onValueChange={setSearchProvider}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select search provider" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {availableProviders?.search_providers.map((provider) => (
-                        <SelectItem key={provider} value={provider}>
-                          {provider.charAt(0).toUpperCase() + provider.slice(1)}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <p className="text-xs text-muted-foreground">
-                    Provider for web search and information gathering
-                  </p>
-                </div>
-                <div className="space-y-3">
-                  <Label htmlFor="llm-provider" className="text-sm font-semibold">LLM Provider</Label>
+                  <Label htmlFor="llm-provider" className="text-sm font-semibold">AI Provider</Label>
                   <Select value={llmProvider} onValueChange={setLlmProvider}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select LLM provider" />
+                      <SelectValue placeholder="Select AI provider" />
                     </SelectTrigger>
                     <SelectContent>
                       {availableProviders?.llm_providers.map((provider) => (
@@ -182,7 +160,7 @@ export function CompanyResearchForm({
                     </SelectContent>
                   </Select>
                   <p className="text-xs text-muted-foreground">
-                    Provider for text processing and analysis
+                    AI provider for search and text processing (with automatic fallback to Playwright)
                   </p>
                 </div>
               </div>

@@ -10,19 +10,22 @@ logger = logging.getLogger(__name__)
 class CompanyResearcher:
     """Main service for researching company information using modular components."""
     
-    def __init__(self, search_provider: str = "groq", llm_provider: str = "groq"):
+    def __init__(self, llm_provider: str = "groq"):
         """
-        Initialize company researcher with specified providers.
+        Initialize company researcher with specified LLM provider.
+        Search provider is automatically determined based on LLM provider.
         
         Args:
-            search_provider: Primary search provider ("groq" or "gemini")
             llm_provider: LLM provider for text processing ("groq" or "gemini")
         """
+        # Determine search provider based on LLM provider
+        search_provider = llm_provider  # Use same provider for search and LLM
+        
         self.search_manager = SearchManager(primary_provider=search_provider)
         self.llm_processor = LLMProcessor(provider=llm_provider)
         self.structured_researcher = StructuredResearcher(search_provider, llm_provider)
         
-        logger.info(f"Initialized CompanyResearcher with search_provider={search_provider}, llm_provider={llm_provider}")
+        logger.info(f"Initialized CompanyResearcher with llm_provider={llm_provider}, auto-selected search_provider={search_provider}")
     
     def research_company(self, company_name: str, company_location: str) -> Dict[str, Any]:
         """
@@ -155,12 +158,12 @@ class CompanyResearcher:
     
     def get_available_providers(self) -> Dict[str, list]:
         """
-        Get list of available providers for search and LLM processing.
+        Get list of available providers for LLM processing.
         
         Returns:
-            Dictionary with available search and LLM providers
+            Dictionary with available LLM providers
         """
         return {
-            "search_providers": self.search_manager.get_available_providers(),
-            "llm_providers": ["groq", "gemini"]
+            "llm_providers": ["groq", "gemini"],
+            "research_types": ["quick", "comprehensive", "structured"]
         } 

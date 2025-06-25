@@ -15,9 +15,8 @@ class GeminiSearch:
         if not self.api_key:
             raise ValueError("GOOGLE_API_KEY environment variable is required")
         
-        # Configure the client
-        genai.configure(api_key=self.api_key)
-        self.client = genai.Client()
+        # Configure the client using the new approach
+        self.client = genai.Client(api_key=self.api_key)
         
         # Define the grounding tool
         self.grounding_tool = types.Tool(
@@ -51,6 +50,21 @@ class GeminiSearch:
             
             result = response.text
             urls = extract_urls_from_text(result)
+            
+            # Extract URLs from grounding metadata if available
+            if hasattr(response, 'candidates') and response.candidates:
+                candidate = response.candidates[0]
+                if hasattr(candidate, 'grounding_metadata') and candidate.grounding_metadata:
+                    grounding_chunks = candidate.grounding_metadata.grounding_chunks
+                    if grounding_chunks:
+                        # Extract URLs from grounding chunks
+                        grounding_urls = []
+                        for chunk in grounding_chunks:
+                            if hasattr(chunk, 'web') and hasattr(chunk.web, 'uri'):
+                                grounding_urls.append(chunk.web.uri)
+                        # Combine with extracted URLs, removing duplicates
+                        all_urls = list(set(urls + grounding_urls))
+                        urls = all_urls
             
             logger.info("Gemini web search completed successfully")
             return {
